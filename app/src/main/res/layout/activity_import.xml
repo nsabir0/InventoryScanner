@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_centerInParent="true"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="80dp"
+    tools:context="com.ms.inventory.activity.ImportActivity">
+
+    <Button
+        android:id="@+id/btn_csv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:onClick="onClick"
+        android:visibility="gone"
+        android:padding="15dp"
+        android:background="@drawable/bg_button"
+        android:text="@string/import_from_csv"
+        android:textColor="@color/design_default_color_background"
+        android:textAllCaps="false"
+        android:stateListAnimator="@null" />
+
+    <Button
+        android:id="@+id/btn_excel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:padding="15dp"
+        android:background="@drawable/bg_button"
+        android:text="@string/import_from_excel"
+        android:textColor="@color/design_default_color_background"
+        android:textAllCaps="false"
+        android:stateListAnimator="@null" />
+
+    <Button
+        android:id="@+id/btn_backup_db"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:onClick="onClick"
+        android:padding="15dp"
+        android:background="@drawable/bg_button"
+        android:text="@string/backup_database"
+        android:textColor="@color/design_default_color_background"
+        android:textAllCaps="false"
+        android:stateListAnimator="@null" />
+
+</LinearLayout>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.ms.inventory.activity.AdjustActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UselessParent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="20dp">
+                <TextView android:text="@string/adjust_scan_quantity"
+                    android:padding="15dp"
+                    android:gravity="center"
+                    android:layout_marginBottom="20dp"
+                    android:textStyle="bold"
+                    />
+
+                <TableRow
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/barcode"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_item_code"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal"
+                        android:padding="1dp">
+
+                        <EditText
+                            android:id="@+id/edt_barcode"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@android:color/white"
+                            android:imeOptions="actionSearch"
+                            android:padding="5dp"
+                            android:singleLine="true"/>
+
+                        <Button
+                            android:id="@+id/btn_barcode_enter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="-5dp"
+                            android:layout_marginTop="-5dp"
+                            android:layout_marginRight="-5dp"
+                            android:layout_marginBottom="-5dp"
+                            android:paddingStart="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="5dp"
+                            android:onClick="onClick"
+                            android:text="@string/enter"
+                            android:textColor="@color/design_default_color_background"
+                            android:background="@drawable/bg_button"
+                            android:textAllCaps="false"
+                            android:stateListAnimator="@null"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"/>
+
+                    </LinearLayout>
+                </TableRow>
+                <TableRow
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/item_code"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_item_code"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal"
+                        android:padding="1dp">
+
+                        <EditText
+                            android:id="@+id/edt_item_code"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="#DADADA"
+                            android:textColor="@drawable/color_edittext"
+                            android:imeOptions="actionSearch"
+                            android:padding="5dp"
+                            android:singleLine="true"
+                            android:enabled="false"/>
+
+                        <Button
+                            android:id="@+id/btn_item_enter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="-5dp"
+                            android:layout_marginTop="-5dp"
+                            android:layout_marginRight="-5dp"
+                            android:layout_marginBottom="-5dp"
+                            android:paddingStart="5dp"
+                            android:paddingTop="5dp"
+                            android:paddingEnd="10dp"
+                            android:paddingBottom="5dp"
+                            android:text="@string/enter"
+                            android:textColor="@color/design_default_color_background"
+                            android:background="@drawable/bg_button"
+                            android:textAllCaps="false"
+                            android:stateListAnimator="@null"
+                            android:minHeight="0dp"
+                            android:minWidth="0dp"
+                            android:visibility="gone"/>
+
+                    </LinearLayout>
+                </TableRow>
+                <TableRow android:id="@+id/layout_stock"
+                          android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stock_qty"/>
+
+                    <EditText
+                        android:id="@+id/edt_stock_qty"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:enabled="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@drawable/color_edittext"/>
+                </TableRow>
+
+                <TableRow android:id="@+id/layout_scan_qty"
+                          android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/scan_qty"/>
+
+                    <EditText
+                        android:id="@+id/edt_scan_qty"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:enabled="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@drawable/color_edittext"/>
+                </TableRow>
+
+                <TableRow android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/adj_qty"/>
+
+                    <EditText
+                        android:id="@+id/edt_adjusted_qty"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:enabled="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="number"
+                        android:singleLine="true"
+                        android:textColor="@drawable/color_edittext"/>
+                </TableRow>
+
+                <TableRow android:layout_marginBottom="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/adj_qty"/>
+
+                    <EditText
+                        android:id="@+id/edt_adjust_qty"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_edittext"
+                        android:imeOptions="actionDone"
+                        android:inputType="numberDecimal|numberSigned"
+                        android:singleLine="true"
+                        android:textColor="@drawable/color_edittext"/>
+                </TableRow>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:onClick="onClick"
+                        android:text="@string/close"
+                        android:background="@drawable/bg_button"
+                        android:backgroundTint="@color/button_close"
+                        android:textColor="@color/design_default_color_background"
+                        android:textAllCaps="false"
+                        android:stateListAnimator="@null"/>
+
+                    <TextView
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"/>
+
+                    <Button
+                        android:id="@+id/btn_save"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:onClick="onClick"
+                        android:text="@string/adjust"
+                        android:background="@drawable/bg_button"
+                        android:textColor="@color/design_default_color_background"
+                        android:textAllCaps="false"
+                        android:stateListAnimator="@null"/>
+
+                    <TextView
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent"/>
+
+                    <Button
+                        android:id="@+id/btn_clear"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:padding="5dp"
+                        android:onClick="onClick"
+                        android:text="@string/clear"
+                        android:background="@drawable/bg_button"
+                        android:backgroundTint="@color/button_clear"
+                        android:textColor="@color/design_default_color_background"
+                        android:textAllCaps="false"
+                        android:stateListAnimator="@null"/>
+
+                </LinearLayout>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

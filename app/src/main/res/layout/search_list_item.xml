@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="?attr/listPreferredItemHeight"
+    android:paddingStart="?attr/listPreferredItemPaddingStart"
+    android:paddingEnd="?attr/listPreferredItemPaddingEnd">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/tvBarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvName"
+        android:layout_alignStart="@id/tvName"
+        android:textAppearance="?attr/textAppearanceListItemSecondary" />
+
+    <TextView
+        android:id="@+id/tvUBarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvBarcode"
+        android:layout_alignStart="@id/tvName"
+        android:textAppearance="?attr/textAppearanceListItemSecondary" />
+
+    <TextView
+        android:id="@+id/tvMrp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvUBarcode"
+        android:layout_alignStart="@id/tvName"
+        android:layout_marginBottom="5dp"
+        android:textAppearance="?attr/textAppearanceListItemSecondary" />
+
+</RelativeLayout>

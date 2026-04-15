@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context="com.ms.inventory.activity.ScanActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:orientation="horizontal"
+            android:padding="3dp">
+
+            <Button
+                android:id="@+id/btn_barcode"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:text="@string/_barcode" />
+
+            <Button
+                android:id="@+id/btn_item_search"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_border"
+                android:text="@string/item_search" />
+
+        </LinearLayout>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingRight="15dp">
+
+            <TableRow
+                android:layout_marginBottom="5dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/barcode" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_item_code"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal"
+                    android:padding="1dp">
+
+                    <EditText
+                        android:id="@+id/edt_barcode"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:autofillHints=""
+                        android:background="@android:color/white"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:padding="3dp"
+                        android:singleLine="true" />
+
+                    <Button
+                        android:id="@+id/btn_barcode_enter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="-5dp"
+                        android:layout_marginTop="-5dp"
+                        android:layout_marginRight="-5dp"
+                        android:layout_marginBottom="-5dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="@string/enter"
+                        android:textColor="@color/design_default_color_background"
+                        android:background="@drawable/bg_button"
+                        android:textAllCaps="false"
+                        android:stateListAnimator="@null"
+                        android:minHeight="0dp"
+                        android:minWidth="0dp" />
+
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/layout_item_code"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_code" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_item_code"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal"
+                    android:padding="1dp">
+
+                    <EditText
+                        android:id="@+id/edt_item_code"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:autofillHints=""
+                        android:background="#DADADA"
+                        android:enabled="false"
+                        android:imeOptions="actionSearch"
+                        android:inputType=" "
+                        android:padding="3dp"
+                        android:singleLine="true"
+                        android:textColor="@drawable/color_edittext" />
+
+                    <Button
+                        android:visibility="gone"
+                        android:id="@+id/btn_item_enter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="-5dp"
+                        android:layout_marginTop="-5dp"
+                        android:layout_marginRight="-5dp"
+                        android:layout_marginBottom="-5dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:text="@string/enter"
+                        android:textColor="@color/design_default_color_background"
+                        android:background="@drawable/bg_button"
+                        android:textAllCaps="false"
+                        android:stateListAnimator="@null"
+                        android:minHeight="0dp"
+                        android:minWidth="0dp" />
+
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/style_name" />
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_textview"
+                    android:lines="2"
+                    android:paddingStart="8dp"
+                    android:paddingTop="7dp"
+                    android:paddingEnd="7dp"
+                    android:paddingBottom="8dp"
+                    android:text="" />
+
+            </TableRow>
+
+            <TableRow android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mrp" />
+
+                <TextView
+                    android:id="@+id/tv_mrp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:enabled="false"
+                    android:singleLine="true"
+                    android:textColor="@drawable/color_edittext" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/layout_scan_qty"
+                android:layout_marginBottom="5dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stock_qty" />
+
+                <EditText
+                    android:id="@+id/edt_stock_qty"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:background="@drawable/bg_edittext"
+                    android:enabled="false"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textColor="@drawable/color_edittext" />
+            </TableRow>
+
+            <TableRow
+                android:layout_marginBottom="5dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scan_qty" />
+
+                <EditText
+                    android:id="@+id/edt_scan_qty"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:autofillHints=""
+                    android:background="@drawable/bg_edittext"
+                    android:hint="@string/_00"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:textColor="@drawable/color_edittext" />
+                <!--android:inputType="number"-->
+
+                <CheckBox
+                    android:id="@+id/chk_multiple_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/multiple_qty" />
+            </TableRow>
+
+            <!--            <LinearLayout android:layout_marginBottom="5dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/item_total_scan_qty" />
+
+                            <TextView
+                                android:id="@+id/tv_item_total_scan_qty"
+                                android:layout_width="0dp"
+                                android:layout_height="30dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/bg_edittext"
+                                android:enabled="false"
+                                android:singleLine="true"
+                                android:textColor="@drawable/color_edittext" />
+
+                            &lt;!&ndash;<RadioButton
+                                android:id="@+id/rdbtn_multiple_qty"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="Multiple Qty"/>&ndash;&gt;
+
+                        </LinearLayout>-->
+
+            <!--            <TableRow
+                android:layout_marginBottom="5dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_name"/>
+
+                <TextView
+                    android:id="@+id/tv_lastScannedItem"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext"
+                    android:enabled="false"
+                    android:singleLine="true"
+                    android:textColor="@drawable/color_edittext"/>
+            </TableRow>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/close"
+                    android:background="@drawable/bg_button"
+                    android:backgroundTint="@color/button_close"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null" />
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/btn_save"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/save"
+                    android:background="@drawable/bg_button"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null" />
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/clear"
+                    android:background="@drawable/bg_button"
+                    android:backgroundTint="@color/button_clear"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/temp_scan_qty" />
+
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/tv_temp_total_scan_qty"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/button_close"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/_00"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/btn_view_temp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/view"
+                    android:background="@drawable/bg_button"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null" />
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/btn_temp_save"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:background="@drawable/bg_button_green"
+                android:text="@string/save_to_local"
+                android:textColor="@color/design_default_color_background"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="5dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/total_scan_qty" />
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/tv_total_scan_qty"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/button_clear"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:text="@string/_00"
+                    android:textColor="@android:color/white"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/btn_view_all"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/view"
+                    android:background="@drawable/bg_button"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null"  />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_import"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:visibility="gone"
+                android:background="@drawable/bg_button_green"
+                android:text="@string/import_excel"
+                android:textColor="@color/design_default_color_background"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null" />
+
+
+            <LinearLayout
+                style="?android:attr/buttonBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginBottom="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_export"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/bg_button"
+                    android:text="@string/export_excel"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null" />
+
+                <TextView
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/btn_save_to_server"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/bg_button_green"
+                    android:text="@string/save_to_server"
+                    android:textColor="@color/design_default_color_background"
+                    android:textAllCaps="false"
+                    android:stateListAnimator="@null" />
+
+
+            </LinearLayout>
+
+        </TableLayout>
+
+
+        <!--<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Item Code: "/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:singleLine="true"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description: "/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:padding="5dp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sale Qty: "/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:singleLine="true"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Sale Price: "/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1.5"
+                    android:inputType="numberDecimal"
+                    android:singleLine="true"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stock Qty: "/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:singleLine="true"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Scan Qty: "/>
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:singleLine="true"/>
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Multiple Qty"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    fancy:fb_defaultColor="@color/button_normal"
+                    fancy:fb_focusColor="@color/button_pressed"
+                    fancy:fb_text="Close"/>
+
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"/>
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    fancy:fb_defaultColor="@color/button_normal"
+                    fancy:fb_focusColor="@color/button_pressed"
+                    fancy:fb_text="Add New"/>
+
+                <TextView
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"/>
+
+                <mehdi.sakout.fancybuttons.FancyButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:onClick="onClick"
+                    fancy:fb_defaultColor="@color/button_normal"
+                    fancy:fb_focusColor="@color/button_pressed"
+                    fancy:fb_text="Clear"/>
+
+            </LinearLayout>
+
+        </LinearLayout>-->
+    </LinearLayout>
+
+</ScrollView>

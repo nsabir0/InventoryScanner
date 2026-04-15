@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">Inventory Scanner</string>
+
+    <string-array name="pref_working_mode_array">
+        <item>Online</item>
+        <item>Offline</item>
+    </string-array>
+
+
+    <string name="DATABASE">inventorydb.db</string>
+    <string name="user_name_emp_field_err">Please provide a valid user name</string>
+    <string name="emp_pass_field_err">Please provide a password</string>
+    <string name="select_session_ids">Select Session IDs:</string>
+    <string name="session">"Session "</string>
+    <string name="_00">00</string>
+    <string name="search_items">Search Items</string>
+    <string name="my_data_has_headers">My Data has headers</string>
+    <string name="inventory">Inventory</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="offline_mode">Offline Mode</string>
+    <string name="online_mode">Online Mode</string>
+    <string name="no_session_selected">No Session Selected.</string>
+    <string name="no_items_are_found">No items are found</string>
+    <string name="search">Search</string>
+    <string name="adjust_scan_quantity">Adjust Scan Quantity</string>
+    <string name="barcode">Barcode:</string>
+    <string name="item_code">Item Code:</string>
+    <string name="stock_qty">Stock Qty:</string>
+    <string name="scan_qty">Scan Qty:</string>
+    <string name="adj_qty">Adj Qty:</string>
+    <string name="utf_8">UTF-8</string>
+    <string name="total_scan_qty">Total Scan Qty:</string>
+    <string name="style_name">Style Name:</string>
+    <string name="mrp">MRP:</string>
+    <string name="multiple_qty">Multiple Qty</string>
+    <string name="item_total_scan_qty">Item Total Scan Qty:</string>
+    <string name="category_name">Category Name:</string>
+    <string name="_barcode">Barcode</string>
+    <string name="item_search">Item Search</string>
+    <string name="a00123456">A00123456</string>
+    <string name="shirt">Shirt</string>
+    <string name="user_barcode">User Barcode:</string>
+    <string name="save">Save</string>
+    <string name="app_version">App Version</string>
+    <string name="temp_scan_qty">Temp Scan Qty:</string>
+    <string name="no_session_found">No Session Found</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="close">Close</string>
+    <string name="delete_all_data">Delete All Data</string>
+    <string name="enter">Enter</string>
+    <string name="clear">Clear</string>
+    <string name="view">View</string>
+    <string name="save_to_local">Save to local</string>
+    <string name="save_to_server">Save to server</string>
+    <string name="export_excel">Export Excel</string>
+    <string name="import_excel">Import Excel</string>
+    <string name="scan_items">Scan Items</string>
+    <string name="adjust_items">Adjust Items</string>
+    <string name="import_export">Import / Export</string>
+    <string name="adjust">Adjust</string>
+    <string name="import_from_excel">Import From Excel</string>
+    <string name="backup_database">Backup Database</string>
+    <string name="import_from_csv">Import From CSV</string>
+    <string name="login">Login</string>
+    <string name="cancel">Cancel</string>
+    <string name="outlet_code">Outlet Code:</string>
+    <string name="zone_name">Zone Name:</string>
+    <string name="host_hint">http://192.168.0.1</string>
+    <string name="host">Host:</string>
+    <string name="demo_code">ABC123</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="select_a_product">Select a Product</string>
+
+
+    <!-- <string name="DATABASE">my_database.db</string> -->
+</resources>

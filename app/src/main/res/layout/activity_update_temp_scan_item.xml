@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    tools:context=".activity.UpdateTempScanItemActivity">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingTop="5dp"
+        android:paddingRight="15dp">
+
+        <TableRow
+            android:layout_marginBottom="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/barcode" />
+
+            <TextView
+                android:id="@+id/tvu_barcode_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_edittext"
+                android:enabled="false"
+                android:singleLine="true"
+                android:textColor="@drawable/color_edittext" />
+        </TableRow>
+
+        <TableRow
+            android:layout_marginBottom="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_barcode" />
+
+            <TextView
+                android:id="@+id/tvu_user_barcode_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_edittext"
+                android:enabled="false"
+                android:singleLine="true"
+                android:textColor="@drawable/color_edittext" />
+        </TableRow>
+
+        <TableRow android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="start|center_vertical"
+                android:text="@string/style_name" />
+
+            <TextView
+                android:id="@+id/tvu_description_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_textview"
+                android:lines="2"
+                android:paddingStart="8dp"
+                android:paddingTop="7dp"
+                android:paddingEnd="7dp"
+                android:paddingBottom="8dp"
+                android:text="" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_marginBottom="5dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan_qty" />
+
+            <EditText
+                android:id="@+id/edtu_scan_qty_id"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:background="@drawable/bg_edittext"
+                android:hint="@string/_00"
+                android:imeOptions="actionDone"
+                android:inputType="numberDecimal"
+                android:singleLine="true"
+                android:textColor="@drawable/color_edittext" />
+
+        </TableRow>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnu_cancel_id"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="@string/close"
+                android:background="@drawable/bg_button"
+                android:backgroundTint="@color/button_close"
+                android:textColor="@color/design_default_color_background"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null" />
+
+            <TextView
+                android:layout_width="5dp"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/btnu_save_id"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="@string/update"
+                android:background="@drawable/bg_button"
+                android:textColor="@color/design_default_color_background"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null" />
+
+            <TextView
+                android:layout_width="5dp"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:id="@+id/btnu_delete_id"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:text="@string/delete"
+                android:background="@drawable/bg_button"
+                android:backgroundTint="@color/button_clear"
+                android:textColor="@color/design_default_color_background"
+                android:textAllCaps="false"
+                android:stateListAnimator="@null" />
+
+        </LinearLayout>
+
+    </TableLayout>
+
+
+</ScrollView>
