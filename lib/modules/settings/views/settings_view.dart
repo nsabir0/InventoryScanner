@@ -31,23 +31,25 @@ class SettingsView extends GetView<SettingsController> {
               ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: controller.deviceIdController,
-              decoration: const InputDecoration(
-                labelText: 'Device ID',
-                prefixIcon: Icon(Icons.devices),
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: controller.zoneNameController,
-              decoration: const InputDecoration(
-                labelText: 'Zone Name',
-                prefixIcon: Icon(Icons.location_on),
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Obx(() => DropdownButtonFormField<String>(
+                  initialValue: controller.selectedZoneName.value,
+                  decoration: const InputDecoration(
+                    labelText: 'Zone Name',
+                    prefixIcon: Icon(Icons.location_on),
+                    border: OutlineInputBorder(),
+                  ),
+                  items: controller.zoneList.map((String zone) {
+                    return DropdownMenuItem<String>(
+                      value: zone,
+                      child: Text(zone),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      controller.selectedZoneName.value = newValue;
+                    }
+                  },
+                )),
             const SizedBox(height: 16),
             TextField(
               controller: controller.outletCodeController,
@@ -57,6 +59,22 @@ class SettingsView extends GetView<SettingsController> {
                 border: OutlineInputBorder(),
               ),
             ),
+            const SizedBox(height: 16),
+            Obx(() {
+              final deviceController =
+                  TextEditingController(text: controller.deviceId.value);
+              return TextField(
+                controller: deviceController,
+                enabled: false,
+                decoration: InputDecoration(
+                  labelText: 'Device ID',
+                  prefixIcon: const Icon(Icons.devices),
+                  border: const OutlineInputBorder(),
+                  filled: true,
+                  fillColor: Colors.grey[100],
+                ),
+              );
+            }),
             const SizedBox(height: 32),
             const Text(
               'Preferences',

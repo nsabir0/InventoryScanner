@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import '../../../data/providers/api_client.dart';
 import '../../../data/repositories/inventory_repository.dart';
+import '../../../data/services/api_service.dart';
 import '../../../data/services/storage_service.dart';
 import '../../../data/local/db.dart';
 import 'package:drift/drift.dart' as drift;
@@ -10,7 +11,7 @@ import '../../../routes/app_pages.dart';
 class SessionController extends GetxController {
   final InventoryRepository repository;
   final StorageService storage = Get.find<StorageService>();
-  final ApiClient apiClient = Get.find<ApiClient>();
+  ApiService get _apiCall => Get.find<ApiClient>().apiService;
 
   var sessionIdList = <String>[].obs;
   var selectedSessionIds = <String>[].obs;
@@ -24,15 +25,15 @@ class SessionController extends GetxController {
   void onInit() {
     super.onInit();
     selectedSessionIds.addAll(storage.sessionIds);
-    fetchSessions();
+    _fetchSessions();
   }
 
-  Future<void> fetchSessions() async {
+  Future<void> _fetchSessions() async {
     isLoading.value = true;
     try {
-      final dateStr = apiClient.apiService.getFormattedDate();
+      final dateStr = _apiCall.getFormattedDate();
 
-      final sessions = await apiClient.apiService.getSessions(
+      final sessions = await _apiCall.getSessions(
         fromDate: '2024-01-01',
         toDate: dateStr,
       );
@@ -93,7 +94,7 @@ class SessionController extends GetxController {
       progressMessage.value =
           "Downloading $ssnId\nPage $currentPage of $totalPage\n(Session $currentSsn of $totalSsn)";
 
-      final sessionData = await apiClient.apiService.getSessionData(
+      final sessionData = await _apiCall.getSessionData(
         sessionId: ssnId,
         pageNo: currentPage,
         dataRowSize: 50000,

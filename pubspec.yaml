@@ -21,6 +21,7 @@ dependencies:
   logger: ^2.0.2+1
   google_fonts: ^6.2.1
   cupertino_icons: ^1.0.7
+  device_info_plus: ^10.1.0
 
 dev_dependencies:
   flutter_test:
