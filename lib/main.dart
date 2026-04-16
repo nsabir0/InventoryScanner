@@ -7,6 +7,7 @@ import 'routes/app_pages.dart';
 import 'data/services/storage_service.dart';
 import 'data/providers/api_client.dart';
 import 'data/local/db.dart';
+import 'data/repositories/inventory_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,7 @@ void main() async {
   // Initialize global dependencies before running the app
   await Get.putAsync(() => StorageService().init(), permanent: true);
   Get.put(AppDatabase(), permanent: true);
+  Get.put(InventoryRepository(Get.find<AppDatabase>()), permanent: true);
   await Get.putAsync(() => ApiClient().init(), permanent: true);
 
   runApp(

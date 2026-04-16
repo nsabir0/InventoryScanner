@@ -58,6 +58,18 @@ class HomeView extends GetView<HomeController> {
             ),
             const SizedBox(height: 12),
             _buildMenuButton(
+              icon: Icons.visibility,
+              label: "VIEW SCAN ITEMS",
+              onPressed: () => Get.toNamed(Routes.VIEW_SCANS),
+            ),
+            const SizedBox(height: 12),
+            _buildMenuButton(
+              icon: Icons.inventory_2,
+              label: "VIEW TEMP SCAN ITEMS",
+              onPressed: () => Get.toNamed(Routes.VIEW_TEMP_SCANS),
+            ),
+            const SizedBox(height: 12),
+            _buildMenuButton(
               icon: Icons.sync,
               label: "IMPORT SESSIONS",
               onPressed: () => Get.toNamed(Routes.SESSION),

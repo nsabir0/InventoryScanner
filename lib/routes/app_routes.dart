@@ -7,6 +7,8 @@ abstract class Routes {
   static const SCAN = _Paths.SCAN;
   static const SESSION = _Paths.SESSION;
   static const SETTINGS = _Paths.SETTINGS;
+  static const VIEW_SCANS = _Paths.VIEW_SCANS;
+  static const VIEW_TEMP_SCANS = _Paths.VIEW_TEMP_SCANS;
 }
 
 abstract class _Paths {
@@ -16,4 +18,6 @@ abstract class _Paths {
   static const SCAN = '/scan';
   static const SESSION = '/session';
   static const SETTINGS = '/settings';
+  static const VIEW_SCANS = '/view-scans';
+  static const VIEW_TEMP_SCANS = '/view-temp-scans';
 }

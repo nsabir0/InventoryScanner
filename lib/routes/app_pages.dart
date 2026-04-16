@@ -9,6 +9,8 @@ import '../modules/session/views/session_view.dart';
 import '../modules/session/bindings/session_binding.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/view_scans/views/view_scans_view.dart';
+import '../modules/view_scans/bindings/view_scans_binding.dart';
 
 part 'app_routes.dart';
 
@@ -42,6 +44,16 @@ class AppPages {
       name: _Paths.SETTINGS,
       page: () => const SettingsView(),
       binding: SettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIEW_SCANS,
+      page: () => const ViewScansView(isTempMode: false),
+      binding: ViewScansBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIEW_TEMP_SCANS,
+      page: () => const ViewScansView(isTempMode: true),
+      binding: ViewScansBinding(),
     ),
   ];
 }

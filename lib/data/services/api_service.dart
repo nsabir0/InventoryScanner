@@ -32,24 +32,64 @@ class ApiService extends GetxService {
     );
   }
 
-  /// Helper method to handle HTTP GET request
+  /// Helper method to handle HTTP GET request (returns Map)
   Future<Map<String, dynamic>> _get(String endpoint,
       {Map<String, String>? queryParameters}) async {
-    try {
-      final uri = _buildUri(endpoint, queryParameters: queryParameters);
-      _logger.d('GET: $uri');
+    final uri = _buildUri(endpoint, queryParameters: queryParameters);
+    _logger.d('GET: $uri');
 
+    try {
       final response = await http.get(uri).timeout(_timeout);
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) {
+          return decoded;
+        } else {
+          _logger.e('Expected Map but got: ${decoded.runtimeType}');
+          _logger.e('Response body: ${response.body}');
+          throw Exception('Invalid response format: expected JSON object');
+        }
       } else {
         throw Exception(
             'HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
     } on TimeoutException {
       throw Exception('Connection timeout. Please check your network.');
-    } on FormatException {
+    } on FormatException catch (e) {
+      _logger.e('JSON decode error: $e');
+      throw Exception('Invalid server response format.');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Helper method to handle HTTP GET request (returns List)
+  Future<List<dynamic>> _getList(String endpoint,
+      {Map<String, String>? queryParameters}) async {
+    final uri = _buildUri(endpoint, queryParameters: queryParameters);
+    _logger.d('GET: $uri');
+
+    try {
+      final response = await http.get(uri).timeout(_timeout);
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded is List) {
+          return decoded;
+        } else {
+          _logger.e('Expected List but got: ${decoded.runtimeType}');
+          _logger.e('Response body: ${response.body}');
+          throw Exception('Invalid response format: expected JSON array');
+        }
+      } else {
+        throw Exception(
+            'HTTP ${response.statusCode}: ${response.reasonPhrase}');
+      }
+    } on TimeoutException {
+      throw Exception('Connection timeout. Please check your network.');
+    } on FormatException catch (e) {
+      _logger.e('JSON decode error: $e');
       throw Exception('Invalid server response format.');
     } catch (e) {
       rethrow;
@@ -59,10 +99,10 @@ class ApiService extends GetxService {
   /// Helper method to handle HTTP POST request
   Future<Map<String, dynamic>> _post(String endpoint,
       {Map<String, dynamic>? body}) async {
-    try {
-      final uri = _buildUri(endpoint);
-      _logger.d('POST: $uri');
+    final uri = _buildUri(endpoint);
+    _logger.d('POST: $uri');
 
+    try {
       final response = await http
           .post(
             uri,
@@ -72,14 +112,21 @@ class ApiService extends GetxService {
           .timeout(_timeout);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return jsonDecode(response.body) as Map<String, dynamic>;
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) {
+          return decoded;
+        } else {
+          _logger.e('Expected Map but got: ${decoded.runtimeType}');
+          throw Exception('Invalid response format: expected JSON object');
+        }
       } else {
         throw Exception(
             'HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
     } on TimeoutException {
       throw Exception('Connection timeout. Please check your network.');
-    } on FormatException {
+    } on FormatException catch (e) {
+      _logger.e('JSON decode error: $e');
       throw Exception('Invalid server response format.');
     } catch (e) {
       rethrow;
@@ -185,44 +232,48 @@ class ApiService extends GetxService {
     required String toDate,
   }) async {
     try {
-      final response = await _get('ValuesApi/GetSession', queryParameters: {
+      final response = await _getList('ValuesApi/GetSession', queryParameters: {
         'FromDate': fromDate,
         'ToDate': toDate,
       });
 
-      if (response is List) {
-        return (response as List<dynamic>)
-            .map((item) => SessionInfo.fromJson(item as Map<String, dynamic>))
-            .where((session) => !session.isDiscard)
-            .toList();
-      }
+      _logger.d('Sessions fetched: ${response.length}');
 
-      return [];
-    } catch (e) {
+      return response
+          .map((item) => SessionInfo.fromJson(item as Map<String, dynamic>))
+          .where((session) => !session.isDiscard)
+          .toList();
+    } catch (e, stackTrace) {
+      _logger.e('Failed to fetch sessions: $e');
+      _logger.e('Stack trace: $stackTrace');
       throw Exception('Failed to fetch sessions: ${e.toString()}');
     }
   }
 
   /// Get session data (paginated) - Native: ValuesApi/GetSessionList
+  /// Returns a List containing one object with TotalPage and Data array
   Future<SessionDataItem> getSessionData({
     required String sessionId,
     required int pageNo,
-    int dataRowSize = 50000,
+    int dataRowSize = 80000,
   }) async {
     try {
-      final response = await _get('ValuesApi/GetSessionList', queryParameters: {
+      final response =
+          await _getList('ValuesApi/GetSessionList', queryParameters: {
         'SessionId': sessionId,
         'PageNo': pageNo.toString(),
         'DataRowSize': dataRowSize.toString(),
       });
 
-      if (response is List && response.isNotEmpty) {
-        return SessionDataItem.fromJson(
-            (response as List<dynamic>)[0] as Map<String, dynamic>);
+      if (response.isNotEmpty) {
+        _logger.d('Session data page $pageNo: ${response.length} item(s)');
+        return SessionDataItem.fromJson(response[0] as Map<String, dynamic>);
       }
 
       throw Exception('No data received for session');
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('Failed to fetch session data: $e');
+      _logger.e('Stack trace: $stackTrace');
       throw Exception('Failed to fetch session data: ${e.toString()}');
     }
   }

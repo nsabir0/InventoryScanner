@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/providers/api_client.dart';
 import '../../../data/services/storage_service.dart';
+import '../../../data/repositories/inventory_repository.dart';
 import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
   final StorageService storage = Get.find<StorageService>();
   final ApiClient apiClient = Get.find<ApiClient>();
+  final InventoryRepository repository = Get.find<InventoryRepository>();
 
   final userController = TextEditingController();
   final passwordController = TextEditingController();
@@ -62,7 +64,9 @@ class LoginController extends GetxController {
       if (response.status) {
         storage.saveOfflineUserInfo(userName, password);
         storage.user = userName;
-        Get.offAllNamed(Routes.HOME);
+
+        // Navigate based on mode and existing data (matches native Android logic)
+        await _navigateAfterLogin();
       } else {
         Get.snackbar("Login Failed", response.message,
             snackPosition: SnackPosition.BOTTOM,
@@ -90,9 +94,41 @@ class LoginController extends GetxController {
       Get.snackbar("Error", "Please login first in online mode");
     } else if (storage.offlineUserName == userName &&
         storage.offlinePassword == password) {
+      // Offline mode always goes to Home (matches native Android)
       Get.offAllNamed(Routes.HOME);
     } else {
       Get.snackbar("Error", "Invalid username or password.");
+    }
+  }
+
+  /// Navigate to appropriate screen after login (matches native Android logic)
+  /// Native: LoginActivity.java line 159-170
+  Future<void> _navigateAfterLogin() async {
+    try {
+      // Check if there's existing scan data
+      final totalScanQty = await repository.getTotalScanQty();
+      final tempScanQty = await repository.getTempTotalScanQty();
+
+      final bool hasScanData = (totalScanQty != null && totalScanQty > 0) ||
+          (tempScanQty != null && tempScanQty > 0);
+
+      // Native logic:
+      // if (!isOnlineMode || (isOnlineMode && hasScanData)) -> MainActivity (Home)
+      // else -> SessionActivity
+      if (!isOnline.value || hasScanData) {
+        // Offline mode OR has existing data -> Go to Home
+        Get.offAllNamed(Routes.HOME);
+      } else {
+        // Online mode AND no data -> Go to Session screen
+        Get.offAllNamed(Routes.SESSION);
+      }
+    } catch (e) {
+      // If error checking data, default to Session for online mode
+      if (isOnline.value) {
+        Get.offAllNamed(Routes.SESSION);
+      } else {
+        Get.offAllNamed(Routes.HOME);
+      }
     }
   }
 }

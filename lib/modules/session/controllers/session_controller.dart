@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/providers/api_client.dart';
 import '../../../data/repositories/inventory_repository.dart';
@@ -18,6 +19,9 @@ class SessionController extends GetxController {
   var isLoading = false.obs;
   var progressMessage = "".obs;
   var progressValue = 0.0.obs;
+
+  // For double back press
+  DateTime? lastBackPress;
 
   SessionController(this.repository);
 
@@ -46,7 +50,19 @@ class SessionController extends GetxController {
         }
       }
     } catch (e) {
-      Get.snackbar("Error", "Failed to fetch sessions: $e");
+      String errorMessage = e.toString();
+      // Extract clean error message
+      if (errorMessage.contains('Exception:')) {
+        errorMessage = errorMessage.split('Exception:').last.trim();
+      }
+      Get.snackbar(
+        "Session Error",
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 4),
+      );
     } finally {
       isLoading.value = false;
     }
@@ -62,7 +78,13 @@ class SessionController extends GetxController {
 
   Future<void> saveAndDownload() async {
     if (selectedSessionIds.isEmpty) {
-      Get.snackbar("Error", "Please select at least one session.");
+      Get.snackbar(
+        "Error",
+        "Please select at least one session.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -70,59 +92,108 @@ class SessionController extends GetxController {
     storage.sessionIds = selectedSessionIds;
     await repository.clearInventoryData();
 
+    final errorMessages = <String>[];
+
     try {
       for (int i = 0; i < selectedSessionIds.length; i++) {
         String ssnId = selectedSessionIds[i];
         progressMessage.value =
             "Preparing Session Data (${i + 1}/${selectedSessionIds.length})...";
-        await _downloadSessionData(ssnId, i + 1, selectedSessionIds.length);
+
+        final errors =
+            await _downloadSessionData(ssnId, i + 1, selectedSessionIds.length);
+        errorMessages.addAll(errors);
       }
+
+      // Show completion message
+      if (errorMessages.isNotEmpty) {
+        Get.snackbar(
+          "Completed with Errors",
+          "Downloaded with ${errorMessages.length} error(s). Check logs for details.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 5),
+        );
+      } else {
+        Get.snackbar(
+          "Success",
+          "All Session Data Saved Successfully.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 3),
+        );
+      }
+
+      // Navigate to home
       Get.offAllNamed(Routes.HOME);
     } catch (e) {
-      Get.snackbar("Download Error", e.toString());
+      Get.snackbar(
+        "Download Error",
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> _downloadSessionData(
+  Future<List<String>> _downloadSessionData(
       String ssnId, int currentSsn, int totalSsn) async {
     int currentPage = 1;
     int totalPage = 1;
+    final errors = <String>[];
 
     do {
       progressMessage.value =
-          "Downloading $ssnId\nPage $currentPage of $totalPage\n(Session $currentSsn of $totalSsn)";
+          "Saving Offline Session Data ($currentSsn/$totalSsn)\n(Dataset ${currentPage - 1}/$totalPage)";
 
-      final sessionData = await _apiCall.getSessionData(
-        sessionId: ssnId,
-        pageNo: currentPage,
-        dataRowSize: 50000,
-      );
+      try {
+        final sessionData = await _apiCall.getSessionData(
+          sessionId: ssnId,
+          pageNo: currentPage,
+          dataRowSize: 80000,
+        );
 
-      totalPage = sessionData.totalPage;
+        totalPage = sessionData.totalPage;
 
-      if (sessionData.status && sessionData.data.isNotEmpty) {
-        List<dynamic> data = sessionData.data;
-        List<InventoryDataCompanion> companions = data.map((item) {
-          return InventoryDataCompanion.insert(
-            sessionId: drift.Value(item['SessionId']?.toString()),
-            barcode: drift.Value(item['Barcode']?.toString()),
-            sBarcode: drift.Value(item['sBarcode']?.toString()),
-            userBarcode: drift.Value(item['USER_BARCODE']?.toString().trim()),
-            startQty: drift.Value((item['StartQty'] as num?)?.toDouble()),
-            scanQty: drift.Value((item['ScanQty'] as num?)?.toDouble()),
-            scanStartDate: drift.Value(item['ScanStartDate']?.toString()),
-            mrp: drift.Value((item['MRP'] as num?)?.toDouble()),
-            description: drift.Value(item['Description']?.toString()),
-            cpu: drift.Value((item['CPU'] as num?)?.toDouble()),
-          );
-        }).toList();
+        if (sessionData.status && sessionData.data.isNotEmpty) {
+          List<dynamic> data = sessionData.data;
+          List<InventoryDataCompanion> companions = data.map((item) {
+            return InventoryDataCompanion.insert(
+              sessionId: drift.Value(item['SessionId']?.toString()),
+              barcode: drift.Value(item['Barcode']?.toString()),
+              sBarcode: drift.Value(item['sBarcode']?.toString()),
+              userBarcode: drift.Value(item['USER_BARCODE']?.toString().trim()),
+              startQty: drift.Value((item['StartQty'] as num?)?.toDouble()),
+              scanQty: drift.Value((item['ScanQty'] as num?)?.toDouble()),
+              scanStartDate: drift.Value(item['ScanStartDate']?.toString()),
+              mrp: drift.Value((item['MRP'] as num?)?.toDouble()),
+              description: drift.Value(item['Description']?.toString()),
+              cpu: drift.Value((item['CPU'] as num?)?.toDouble()),
+            );
+          }).toList();
 
-        await repository.addInventoryList(companions);
+          await repository.addInventoryList(companions);
+
+          // Update progress
+          progressValue.value = (currentPage * 100) / totalPage;
+        } else {
+          final errorMsg = "Status false for session $ssnId, page $currentPage";
+          errors.add(errorMsg);
+        }
+
+        currentPage++;
+      } catch (e) {
+        final errorMsg = "Error in session: $ssnId, page: $currentPage - $e";
+        errors.add(errorMsg);
+        currentPage++;
       }
-
-      currentPage++;
     } while (currentPage <= totalPage);
+
+    return errors;
   }
 }
