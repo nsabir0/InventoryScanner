@@ -17,8 +17,9 @@ class ViewScansView extends GetView<ViewScansController> {
         title: Text(isTempMode ? 'View Temp Scan Items' : 'View Scan Items'),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
+      body: SafeArea(
+        child: Column(
+          children: [
           // Search Bar - Matches native Android design with orange background
           Container(
             color: const Color(0xFFE37F54), // Native Android orange color
@@ -96,7 +97,7 @@ class ViewScansView extends GetView<ViewScansController> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        isTempMode
+                        controller.isTempMode.value
                             ? 'No temp scan items found'
                             : 'No scan items found',
                         style: TextStyle(
@@ -123,7 +124,8 @@ class ViewScansView extends GetView<ViewScansController> {
 
           // Delete All button for temp items
           Obx(() {
-            if (isTempMode && controller.scanItemsList.isNotEmpty) {
+            if (controller.isTempMode.value &&
+                controller.scanItemsList.isNotEmpty) {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -161,8 +163,9 @@ class ViewScansView extends GetView<ViewScansController> {
           }),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   /// Build individual scan item card - Matches native Android design
   Widget _buildScanItemCard(dynamic item) {
