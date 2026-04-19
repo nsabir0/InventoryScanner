@@ -7,10 +7,11 @@ class SessionView extends GetView<SessionController> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
         // Double back press to exit like native Android
-        return await _onWillPop();
+        await _onWillPop();
       },
       child: Scaffold(
         appBar: AppBar(
@@ -132,7 +133,7 @@ class SessionView extends GetView<SessionController> {
                     color: Colors.white,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, -2),
                       ),

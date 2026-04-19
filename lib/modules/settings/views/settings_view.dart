@@ -32,7 +32,7 @@ class SettingsView extends GetView<SettingsController> {
             ),
             const SizedBox(height: 16),
             Obx(() => DropdownButtonFormField<String>(
-                  initialValue: controller.selectedZoneName.value,
+                  value: controller.selectedZoneName.value,
                   decoration: const InputDecoration(
                     labelText: 'Zone Name',
                     prefixIcon: Icon(Icons.location_on),
