@@ -11,6 +11,10 @@ import '../modules/settings/views/settings_view.dart';
 import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/view_scans/views/view_scans_view.dart';
 import '../modules/view_scans/bindings/view_scans_binding.dart';
+import '../modules/search/views/search_view.dart';
+import '../modules/search/bindings/search_binding.dart';
+import '../modules/adjust/views/adjust_view.dart';
+import '../modules/adjust/bindings/adjust_binding.dart';
 
 part 'app_routes.dart';
 
@@ -47,13 +51,23 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.VIEW_SCANS,
-      page: () => const ViewScansView(isTempMode: false),
+      page: () => ViewScansView(isTempMode: false),
       binding: ViewScansBinding(),
     ),
     GetPage(
       name: _Paths.VIEW_TEMP_SCANS,
-      page: () => const ViewScansView(isTempMode: true),
+      page: () => ViewScansView(isTempMode: true),
       binding: ViewScansBinding(),
+    ),
+    GetPage(
+      name: _Paths.SEARCH,
+      page: () => const InventorySearchView(),
+      binding: SearchBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADJUST,
+      page: () => const AdjustView(),
+      binding: AdjustBinding(),
     ),
   ];
 }

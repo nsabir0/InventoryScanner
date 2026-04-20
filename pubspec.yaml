@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   get: ^4.7.3
   http: ^1.6.0
   path_provider: ^2.1.5
@@ -16,6 +17,13 @@ dependencies:
   internet_connection_checker_plus: ^2.9.1+2
   intl: ^0.20.2
   logger: ^2.7.0
+  excel: ^4.0.6
+  file_picker: ^11.0.2
+  vibration: ^3.1.8
+  permission_handler: ^12.0.1
+  
+  mobile_scanner: ^7.2.0
+  flutter_screenutil: ^5.9.3
 
   drift: 2.31.0
   sqlite3_flutter_libs: 0.5.42
@@ -23,6 +31,7 @@ dependencies:
   cupertino_icons: 1.0.8
   device_info_plus: 12.4.0
   shared_preferences: 2.5.3
+  package_info_plus: 9.0.1
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +39,13 @@ dev_dependencies:
   drift_dev: 2.31.0
   build_runner: ^2.13.1
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/app_logo.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true

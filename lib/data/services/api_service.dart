@@ -40,6 +40,8 @@ class ApiService extends GetxService {
 
     try {
       final response = await http.get(uri).timeout(_timeout);
+      _logger
+          .i('Response from $uri: [${response.statusCode}] ${response.body}');
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
@@ -47,7 +49,6 @@ class ApiService extends GetxService {
           return decoded;
         } else {
           _logger.e('Expected Map but got: ${decoded.runtimeType}');
-          _logger.e('Response body: ${response.body}');
           throw Exception('Invalid response format: expected JSON object');
         }
       } else {
@@ -55,23 +56,29 @@ class ApiService extends GetxService {
             'HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
     } on TimeoutException {
+      _logger.e('Timeout requesting $uri');
       throw Exception('Connection timeout. Please check your network.');
     } on FormatException catch (e) {
-      _logger.e('JSON decode error: $e');
+      _logger.e('JSON decode error for $uri: $e');
       throw Exception('Invalid server response format.');
     } catch (e) {
+      _logger.e('API Error for $uri: $e');
       rethrow;
     }
   }
 
   /// Helper method to handle HTTP GET request (returns List)
   Future<List<dynamic>> _getList(String endpoint,
-      {Map<String, String>? queryParameters}) async {
+      {Map<String, String>? queryParameters, bool logResponse = false}) async {
     final uri = _buildUri(endpoint, queryParameters: queryParameters);
     _logger.d('GET: $uri');
 
     try {
       final response = await http.get(uri).timeout(_timeout);
+
+      if (logResponse) {
+        _logger.i('Response from $uri: [${response.statusCode}] ${response.body}');
+      }
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
@@ -83,15 +90,20 @@ class ApiService extends GetxService {
           throw Exception('Invalid response format: expected JSON array');
         }
       } else {
+        if (!logResponse) {
+          _logger.e('Error Response from $uri: [${response.statusCode}] ${response.body}');
+        }
         throw Exception(
             'HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
     } on TimeoutException {
+      _logger.e('Timeout requesting $uri');
       throw Exception('Connection timeout. Please check your network.');
     } on FormatException catch (e) {
-      _logger.e('JSON decode error: $e');
+      _logger.e('JSON decode error for $uri: $e');
       throw Exception('Invalid server response format.');
     } catch (e) {
+      _logger.e('API Error for $uri: $e');
       rethrow;
     }
   }
@@ -111,6 +123,9 @@ class ApiService extends GetxService {
           )
           .timeout(_timeout);
 
+      _logger
+          .i('Response from $uri: [${response.statusCode}] ${response.body}');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         final decoded = jsonDecode(response.body);
         if (decoded is Map<String, dynamic>) {
@@ -124,11 +139,13 @@ class ApiService extends GetxService {
             'HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
     } on TimeoutException {
+      _logger.e('Timeout requesting $uri');
       throw Exception('Connection timeout. Please check your network.');
     } on FormatException catch (e) {
-      _logger.e('JSON decode error: $e');
+      _logger.e('JSON decode error for $uri: $e');
       throw Exception('Invalid server response format.');
     } catch (e) {
+      _logger.e('API Error for $uri: $e');
       rethrow;
     }
   }
@@ -227,31 +244,37 @@ class ApiService extends GetxService {
   // ==================== SESSION MANAGEMENT ====================
 
   /// Get sessions list - Native: ValuesApi/GetSession
-  Future<List<SessionInfo>> getSessions({
+  Future<ApiResponse<List<SessionInfo>>> getSession({
     required String fromDate,
     required String toDate,
   }) async {
     try {
-      final response = await _getList('ValuesApi/GetSession', queryParameters: {
-        'FromDate': fromDate,
-        'ToDate': toDate,
-      });
+      final response = await _getList('ValuesApi/GetSession',
+          queryParameters: {
+            'FromDate': fromDate,
+            'ToDate': toDate,
+          },
+          logResponse: true);
 
-      _logger.d('Sessions fetched: ${response.length}');
-
-      return response
+      List<SessionInfo> results = response
           .map((item) => SessionInfo.fromJson(item as Map<String, dynamic>))
-          .where((session) => !session.isDiscard)
           .toList();
-    } catch (e, stackTrace) {
-      _logger.e('Failed to fetch sessions: $e');
-      _logger.e('Stack trace: $stackTrace');
-      throw Exception('Failed to fetch sessions: ${e.toString()}');
+
+      return ApiResponse<List<SessionInfo>>(
+        status: true,
+        message: 'Success',
+        data: results,
+      );
+    } catch (e) {
+      return ApiResponse<List<SessionInfo>>(
+        status: false,
+        message: e.toString(),
+        data: [],
+      );
     }
   }
 
   /// Get session data (paginated) - Native: ValuesApi/GetSessionList
-  /// Returns a List containing one object with TotalPage and Data array
   Future<SessionDataItem> getSessionData({
     required String sessionId,
     required int pageNo,
@@ -266,76 +289,80 @@ class ApiService extends GetxService {
       });
 
       if (response.isNotEmpty) {
-        _logger.d('Session data page $pageNo: ${response.length} item(s)');
         return SessionDataItem.fromJson(response[0] as Map<String, dynamic>);
       }
 
       throw Exception('No data received for session');
-    } catch (e, stackTrace) {
-      _logger.e('Failed to fetch session data: $e');
-      _logger.e('Stack trace: $stackTrace');
+    } catch (e) {
       throw Exception('Failed to fetch session data: ${e.toString()}');
     }
   }
 
   // ==================== INVENTORY OPERATIONS ====================
 
-  /// Save inventory data - Native: Data/SaveInventory
-  /// Accepts a list of inventory items to save
-  Future<SaveInventoryResponse> saveInventory({
-    required List<Map<String, dynamic>> inventoryData,
+  /// Get Scan Item Info - Native: Data/GetScanItemInfo
+  Future<ApiResponse<ScanItemInfo>> getScanItemInfo({
+    required String barcodeItemcode,
+    required String deviceId,
+    required String userId,
+    required String zoneName,
+    required String depoCode,
   }) async {
     try {
-      // Native sends data as JSON array in POST body
-      final response = await _post('Data/SaveInventory', body: {
-        'data': inventoryData,
+      final response = await _get('Data/GetScanItemInfo', queryParameters: {
+        'barcodeItemcode': barcodeItemcode,
+        'deviceId': deviceId,
+        'userId': userId,
+        'zoneName': zoneName,
+        'depoCode': depoCode,
       });
 
-      return SaveInventoryResponse.fromJson(response);
+      return ApiResponse<ScanItemInfo>(
+        status: response['Status'] ?? false,
+        message: response['Message'] ?? '',
+        data: response['ReturnData'] != null
+            ? ScanItemInfo.fromJson(response['ReturnData'])
+            : null,
+      );
     } catch (e) {
-      throw Exception('Failed to save inventory: ${e.toString()}');
+      return ApiResponse<ScanItemInfo>(
+        status: false,
+        message: e.toString(),
+        data: null,
+      );
     }
   }
 
-  /// Save inventory in chunks (for large datasets)
-  /// Native processes 6 items at a time
-  Future<SaveInventoryResponse> saveInventoryInChunks({
-    required List<Map<String, dynamic>> inventoryData,
-    int chunkSize = 6,
-    Function(int progress, int total)? onProgress,
-  }) async {
-    int totalItems = inventoryData.length;
-    int successfulItems = 0;
-    int failedItems = 0;
+  /// Save inventory data - Native: Data/SaveInventory
+  /// Accepts a list of inventory items to save. Native sends as raw JSON Array.
+  Future<SaveInventoryResponse> saveInventory(
+      List<Map<String, dynamic>> inventoryData) async {
+    final uri = _buildUri('Data/SaveInventory');
+    _logger.d('POST (Array): $uri');
 
-    for (int i = 0; i < inventoryData.length; i += chunkSize) {
-      int endIndex = (i + chunkSize < inventoryData.length)
-          ? i + chunkSize
-          : inventoryData.length;
+    try {
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(inventoryData),
+          )
+          .timeout(_timeout);
 
-      List<Map<String, dynamic>> chunk = inventoryData.sublist(i, endIndex);
+      _logger
+          .i('Response from $uri: [${response.statusCode}] ${response.body}');
 
-      try {
-        final response = await saveInventory(inventoryData: chunk);
-
-        if (response.status) {
-          successfulItems += chunk.length;
-          onProgress?.call(successfulItems, totalItems);
-        } else {
-          failedItems += chunk.length;
-          throw Exception(response.message);
-        }
-      } catch (e) {
-        failedItems += chunk.length;
-        rethrow;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final decoded = jsonDecode(response.body);
+        return SaveInventoryResponse.fromJson(decoded);
+      } else {
+        throw Exception(
+            'HTTP ${response.statusCode}: ${response.reasonPhrase}');
       }
+    } catch (e) {
+      _logger.e('API Error for $uri: $e');
+      throw Exception('Failed to save inventory: ${e.toString()}');
     }
-
-    return SaveInventoryResponse(
-      status: failedItems == 0,
-      message: 'Saved: $successfulItems, Failed: $failedItems',
-      savedCount: successfulItems,
-    );
   }
 
   /// Adjust quantity - Native: Data/AdjustQty (if exists)
@@ -366,11 +393,13 @@ class ApiService extends GetxService {
 
   /// Check if API is accessible
   Future<bool> testConnection() async {
+    final uri = _buildUri('data/login');
     try {
-      final uri = _buildUri('data/login');
       final response = await http.get(uri).timeout(_timeout);
+      _logger.i('Test Connection Response from $uri: [${response.statusCode}]');
       return response.statusCode == 200;
     } catch (e) {
+      _logger.e('Test Connection Failed for $uri: $e');
       return false;
     }
   }

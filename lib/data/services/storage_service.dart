@@ -63,4 +63,10 @@ class StorageService extends GetxService {
     _prefs.setString(AppStrings.offlineUserName, username);
     _prefs.setString(AppStrings.offlinePassword, password);
   }
+
+  bool get isMultiScanQty => _prefs.getBool('isMultiScanQty') ?? false;
+  set isMultiScanQty(bool value) => _prefs.setBool('isMultiScanQty', value);
+
+  String get password => _prefs.getString('password') ?? "";
+  set password(String value) => _prefs.setString('password', value);
 }

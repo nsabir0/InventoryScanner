@@ -20,8 +20,8 @@ class SessionController extends GetxController {
   var progressMessage = "".obs;
   var progressValue = 0.0.obs;
 
-  // For double back press
-  DateTime? lastBackPress;
+   // For double back press
+  var lastPressedAt = DateTime.now().obs;
 
   SessionController(this.repository);
 
@@ -37,13 +37,13 @@ class SessionController extends GetxController {
     try {
       final dateStr = _apiCall.getFormattedDate();
 
-      final sessions = await _apiCall.getSessions(
+      final sessions = await _apiCall.getSession(
         fromDate: '2024-01-01',
         toDate: dateStr,
       );
 
       sessionIdList.clear();
-      for (var session in sessions) {
+      for (var session in sessions.data ?? []) {
         bool used = await repository.isSessionUsed(session.sessionId);
         if (!used) {
           sessionIdList.add(session.sessionId);
@@ -141,6 +141,10 @@ class SessionController extends GetxController {
     }
   }
 
+  void logout() {
+    Get.offAllNamed(Routes.LOGIN);
+  }
+
   Future<List<String>> _downloadSessionData(
       String ssnId, int currentSsn, int totalSsn) async {
     int currentPage = 1;
@@ -180,7 +184,11 @@ class SessionController extends GetxController {
           await repository.addInventoryList(companions);
 
           // Update progress
-          progressValue.value = (currentPage * 100) / totalPage;
+          if (totalPage > 0) {
+            progressValue.value = (currentPage * 100) / totalPage;
+          } else {
+            progressValue.value = 0;
+          }
         } else {
           final errorMsg = "Status false for session $ssnId, page $currentPage";
           errors.add(errorMsg);

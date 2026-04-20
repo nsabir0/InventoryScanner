@@ -8,7 +8,9 @@ abstract class Routes {
   static const SESSION = _Paths.SESSION;
   static const SETTINGS = _Paths.SETTINGS;
   static const VIEW_SCANS = _Paths.VIEW_SCANS;
-  static const VIEW_TEMP_SCANS = _Paths.VIEW_TEMP_SCANS;
+   static const VIEW_TEMP_SCANS = _Paths.VIEW_TEMP_SCANS;
+  static const SEARCH = _Paths.SEARCH;
+  static const ADJUST = _Paths.ADJUST;
 }
 
 abstract class _Paths {
@@ -19,5 +21,7 @@ abstract class _Paths {
   static const SESSION = '/session';
   static const SETTINGS = '/settings';
   static const VIEW_SCANS = '/view-scans';
-  static const VIEW_TEMP_SCANS = '/view-temp-scans';
+   static const VIEW_TEMP_SCANS = '/view-temp-scans';
+  static const SEARCH = '/search';
+  static const ADJUST = '/adjust';
 }

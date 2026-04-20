@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../controllers/settings_controller.dart';
 
@@ -9,39 +10,57 @@ class SettingsView extends GetView<SettingsController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        toolbarHeight: 48.h,
+        title: Text(
+          'Settings',
+          style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(12.0.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'Server Configuration',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 12.h),
             TextField(
               controller: controller.hostController,
-              decoration: const InputDecoration(
+              style: TextStyle(fontSize: 14.sp),
+              decoration: InputDecoration(
                 labelText: 'Host/IP Address',
-                prefixIcon: Icon(Icons.dns),
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(fontSize: 12.sp),
+                prefixIcon: Icon(Icons.dns, size: 18.w),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                isDense: true,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 12.h),
             Obx(() => DropdownButtonFormField<String>(
                   value: controller.selectedZoneName.value,
-                  decoration: const InputDecoration(
+                  isDense: true,
+                  style: TextStyle(fontSize: 14.sp, color: Colors.black),
+                  decoration: InputDecoration(
                     labelText: 'Zone Name',
-                    prefixIcon: Icon(Icons.location_on),
-                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(fontSize: 12.sp),
+                    prefixIcon: Icon(Icons.location_on, size: 18.w),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                   ),
                   items: controller.zoneList.map((String zone) {
                     return DropdownMenuItem<String>(
                       value: zone,
-                      child: Text(zone),
+                      child: Text(zone, style: TextStyle(fontSize: 14.sp)),
                     );
                   }).toList(),
                   onChanged: (String? newValue) {
@@ -50,75 +69,115 @@ class SettingsView extends GetView<SettingsController> {
                     }
                   },
                 )),
-            const SizedBox(height: 16),
+            SizedBox(height: 12.h),
             TextField(
               controller: controller.outletCodeController,
-              decoration: const InputDecoration(
+              style: TextStyle(fontSize: 14.sp),
+              decoration: InputDecoration(
                 labelText: 'Outlet Code',
-                prefixIcon: Icon(Icons.store),
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(fontSize: 12.sp),
+                prefixIcon: Icon(Icons.store, size: 18.w),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
+                isDense: true,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 12.h),
             Obx(() {
               final deviceController =
                   TextEditingController(text: controller.deviceId.value);
               return TextField(
                 controller: deviceController,
                 enabled: false,
+                style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
                 decoration: InputDecoration(
                   labelText: 'Device ID',
-                  prefixIcon: const Icon(Icons.devices),
-                  border: const OutlineInputBorder(),
+                  labelStyle: TextStyle(fontSize: 12.sp),
+                  prefixIcon: Icon(Icons.devices, size: 18.w),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6.r),
+                  ),
                   filled: true,
                   fillColor: Colors.grey[100],
+                  isDense: true,
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
                 ),
               );
             }),
-            const SizedBox(height: 32),
-            const Text(
+            SizedBox(height: 24.h),
+            Text(
               'Preferences',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 8.h),
             Obx(() => SwitchListTile(
-                  title: const Text('Multi Scan Quantity'),
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Multi Scan Quantity',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
                   value: controller.isMultiScanQty.value,
                   onChanged: (value) {
                     controller.isMultiScanQty.value = value;
                   },
                 )),
             Obx(() => SwitchListTile(
-                  title: const Text('Show Stock Quantity'),
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Show Stock Quantity',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
                   value: controller.isStockVisible.value,
                   onChanged: (value) {
                     controller.isStockVisible.value = value;
                   },
                 )),
             Obx(() => SwitchListTile(
-                  title: const Text('Show Item Code'),
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Show Item Code',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
                   value: controller.isItemCodeVisible.value,
                   onChanged: (value) {
                     controller.isItemCodeVisible.value = value;
                   },
                 )),
             Obx(() => SwitchListTile(
-                  title: const Text('Scan by S-Barcode'),
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(
+                    'Scan by S-Barcode',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
                   value: controller.isScanBySBarcode.value,
                   onChanged: (value) {
                     controller.isScanBySBarcode.value = value;
                   },
                 )),
-            const SizedBox(height: 32),
+            SizedBox(height: 24.h),
             ElevatedButton.icon(
               onPressed: controller.saveSettings,
-              icon: const Icon(Icons.save),
-              label: const Text('Save Settings'),
+              icon: Icon(Icons.save, size: 18.w),
+              label: Text(
+                'Save Settings',
+                style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+              ),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6.r),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 12.h),
           ],
         ),
       ),

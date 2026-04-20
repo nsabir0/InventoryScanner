@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/repositories/inventory_repository.dart';
+import '../views/update_scan_item_view.dart';
 
 class ViewScansController extends GetxController {
   final InventoryRepository repository;
@@ -16,7 +17,19 @@ class ViewScansController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadScanItems();
+    // Listen for mode changes and reload
+    ever(isTempMode, (_) => loadScanItems());
+  }
+
+  /// Called by the View to initialize the mode and trigger loading
+  void initMode(bool mode) {
+    if (isTempMode.value != mode) {
+      // This will trigger 'ever' which calls loadScanItems()
+      isTempMode.value = mode;
+    } else if (scanItemsList.isEmpty) {
+      // Force load if empty even if mode didn't change
+      loadScanItems();
+    }
   }
 
   /// Load all scan items based on mode (regular or temp)
@@ -25,12 +38,12 @@ class ViewScansController extends GetxController {
     try {
       if (isTempMode.value) {
         final items = await repository.getAllTempScanItems();
-        scanItemsList.value = items;
-        filteredItemsList.value = items;
+        scanItemsList.assignAll(items);
+        filteredItemsList.assignAll(items);
       } else {
         final items = await repository.getAllScanItems();
-        scanItemsList.value = items;
-        filteredItemsList.value = items;
+        scanItemsList.assignAll(items);
+        filteredItemsList.assignAll(items);
       }
     } catch (e) {
       Get.snackbar(
@@ -48,13 +61,13 @@ class ViewScansController extends GetxController {
     searchText.value = query;
 
     if (query.isEmpty) {
-      filteredItemsList.value = scanItemsList;
+      filteredItemsList.assignAll(scanItemsList);
       return;
     }
 
     final upperQuery = query.toUpperCase().trim();
 
-    filteredItemsList.value = scanItemsList.where((item) {
+    final results = scanItemsList.where((item) {
       final barcode = (item.barcode ?? '').toString().toUpperCase();
       final userBarcode = (item.userBarcode ?? '').toString().toUpperCase();
       final sBarcode = (item.sBarcode ?? '').toString().toUpperCase();
@@ -65,12 +78,20 @@ class ViewScansController extends GetxController {
           sBarcode.contains(upperQuery) ||
           description.contains(upperQuery);
     }).toList();
+    
+    filteredItemsList.assignAll(results);
   }
 
   /// Delete item from list
   Future<void> deleteItem(dynamic item) async {
     try {
-      final success = await repository.deleteScanItem(item.id);
+      bool success = false;
+      if (isTempMode.value) {
+        success = await repository.deleteTempScanItem(item.id);
+      } else {
+        success = await repository.deleteScanItem(item.id);
+      }
+      
       if (success) {
         await loadScanItems();
         Get.snackbar(
@@ -86,6 +107,41 @@ class ViewScansController extends GetxController {
         "Error",
         "Failed to delete item: ${e.toString()}",
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  /// Update an item's quantity
+  Future<void> updateItemQty(dynamic item, double newQty) async {
+    try {
+      bool success = false;
+      if (isTempMode.value) {
+        final updatedItem = item.copyWith(scanQty: newQty.toString());
+        success = await repository.updateTempScanItem(updatedItem);
+      } else {
+        final updatedItem = item.copyWith(scanQty: newQty.toString());
+        success = await repository.updateScanItem(updatedItem);
+      }
+
+      if (success) {
+        await loadScanItems();
+        Get.snackbar(
+          "Success",
+          "Item Updated",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Failed to update item: ${e.toString()}",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
       );
     }
   }
@@ -113,11 +169,6 @@ class ViewScansController extends GetxController {
 
   /// Navigate to update item screen
   void navigateToUpdateItem(dynamic item) {
-    // TODO: Navigate to UpdateScanItem screen when implemented
-    Get.snackbar(
-      "Info",
-      "Update feature coming soon",
-      snackPosition: SnackPosition.BOTTOM,
-    );
+    Get.to(() => UpdateScanItemView(item: item));
   }
 }

@@ -17,6 +17,15 @@ class InventoryRepository {
           .go()
           .then((value) => value > 0);
 
+  Future<ScanItem?> getSingleScanItem(String sBarcode, String mrp) async {
+    final query = db.select(db.scanItems)
+      ..where((t) => t.sBarcode.equals(sBarcode) & t.salePrice.equals(mrp));
+    return await query.getSingleOrNull();
+  }
+
+  Future<bool> updateScanItem(ScanItem item) =>
+      db.update(db.scanItems).replace(item);
+
   Future<void> deleteAllScanItems() => db.delete(db.scanItems).go();
 
   // Temp Scan Items
@@ -25,6 +34,14 @@ class InventoryRepository {
 
   Future<int> addTempScanItem(TempScanItemsCompanion item) =>
       db.into(db.tempScanItems).insert(item);
+
+  Future<bool> deleteTempScanItem(int id) =>
+      (db.delete(db.tempScanItems)..where((t) => t.id.equals(id)))
+          .go()
+          .then((value) => value > 0);
+
+  Future<bool> updateTempScanItem(TempScanItem item) =>
+      db.update(db.tempScanItems).replace(item);
 
   Future<void> deleteAllTempScanItems() => db.delete(db.tempScanItems).go();
 
@@ -56,6 +73,18 @@ class InventoryRepository {
     final query = db.selectOnly(db.inventoryData)..addColumns([countExp]);
     final result = await query.map((row) => row.read(countExp)).getSingle();
     return result ?? 0;
+  }
+
+  Future<List<InventoryDataData>> getInventoryItemByBarcode(String barcode) {
+    return (db.select(db.inventoryData)
+          ..where((t) => t.barcode.equals(barcode) | t.sBarcode.equals(barcode)))
+        .get();
+  }
+
+  Future<InventoryDataData?> getSingleInventoryItem(String sBarcode, String mrp) async {
+    final query = db.select(db.inventoryData)
+      ..where((t) => t.sBarcode.equals(sBarcode) & t.mrp.equals(double.tryParse(mrp) ?? 0));
+    return await query.getSingleOrNull();
   }
 
   Future<List<InventoryDataData>> searchInventory(String key) {

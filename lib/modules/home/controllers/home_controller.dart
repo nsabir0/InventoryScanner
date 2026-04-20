@@ -10,6 +10,8 @@ class HomeController extends GetxController {
   var totalInventoryItems = 0.obs;
   var sessionText = "No session selected".obs;
 
+  var lastPressedAt = DateTime.now().obs;
+
   HomeController(this.repository);
 
   @override

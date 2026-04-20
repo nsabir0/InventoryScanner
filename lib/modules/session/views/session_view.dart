@@ -10,13 +10,34 @@ class SessionView extends GetView<SessionController> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
-        // Double back press to exit like native Android
-        await _onWillPop();
+        if (didPop) return;
+
+        final now = DateTime.now();
+        final backButtonHasNotBeenPressedOrIsOld =
+            now.difference(controller.lastPressedAt.value) >
+                const Duration(seconds: 2);
+
+        if (backButtonHasNotBeenPressedOrIsOld) {
+          controller.lastPressedAt.value = now;
+          Get.snackbar(
+            "Logout",
+            "Press back again to logout",
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 2),
+          );
+        } else {
+          controller.logout();
+        }
       },
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Import Sessions'),
-          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () => controller.logout(),
+            ),
+          ],
         ),
         body: Obx(() {
           // Show loading when fetching session list
@@ -150,14 +171,20 @@ class SessionView extends GetView<SessionController> {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Obx(() => LinearProgressIndicator(
-                            value: controller.progressValue.value > 0
-                                ? controller.progressValue.value / 100
-                                : null,
-                            backgroundColor: Colors.grey[200],
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.blue),
-                          )),
+                      Obx(() {
+                        double? progress;
+                        if (controller.progressValue.value > 0 &&
+                            !controller.progressValue.value.isInfinite &&
+                            !controller.progressValue.value.isNaN) {
+                          progress = controller.progressValue.value / 100;
+                        }
+                        return LinearProgressIndicator(
+                          value: progress,
+                          backgroundColor: Colors.grey[200],
+                          valueColor:
+                              const AlwaysStoppedAnimation<Color>(Colors.blue),
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -193,24 +220,6 @@ class SessionView extends GetView<SessionController> {
         }),
       ),
     );
-  }
-
-  Future<bool> _onWillPop() async {
-    // Double back press implementation
-    final DateTime now = DateTime.now();
-    if (controller.lastBackPress != null &&
-        now.difference(controller.lastBackPress!) <
-            const Duration(seconds: 2)) {
-      return true;
-    }
-    controller.lastBackPress = now;
-    Get.snackbar(
-      "Exit",
-      "Press back again to exit",
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2),
-    );
-    return false;
   }
 
   void _showDownloadConfirmation() {

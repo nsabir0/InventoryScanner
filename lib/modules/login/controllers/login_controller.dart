@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../data/providers/api_client.dart';
@@ -6,20 +8,39 @@ import '../../../data/repositories/inventory_repository.dart';
 import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
-  final StorageService storage = Get.find<StorageService>();
-  final ApiClient apiClient = Get.find<ApiClient>();
-  final InventoryRepository repository = Get.find<InventoryRepository>();
+  final storage = Get.find<StorageService>();
+  final apiClient = Get.find<ApiClient>();
+  final repository = Get.find<InventoryRepository>();
 
   final userController = TextEditingController();
   final passwordController = TextEditingController();
 
+  var userFocusNode = FocusNode();
+  var passwordFocusNode = FocusNode();
+
   var isOnline = true.obs;
   var isLoading = false.obs;
+  var obscurePassword = true.obs;
+  var isUserEmpty = true.obs;
 
   @override
   void onInit() {
     super.onInit();
     isOnline.value = storage.isOnlineMode;
+    userController.addListener(() {
+      isUserEmpty.value = userController.text.trim().isEmpty;
+    });
+    Timer(Duration(milliseconds: 200), () {
+      userFocusNode.requestFocus();
+    });
+  }
+
+  void handleUserSubmitted() {
+    if (userController.text.trim().isEmpty) {
+      userFocusNode.requestFocus();
+    } else {
+      passwordFocusNode.requestFocus();
+    }
   }
 
   void toggleMode() {
@@ -28,6 +49,8 @@ class LoginController extends GetxController {
   }
 
   Future<void> login() async {
+    if (isLoading.isTrue) return;
+
     if (storage.outletCode.isEmpty || storage.zoneName.isEmpty) {
       Get.snackbar("Error", "Configuration missing. Please check settings.");
       return;

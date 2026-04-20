@@ -93,9 +93,6 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/**
- * @noinspection deprecation, CallToPrintStackTrace
- */
 public class ScanActivity extends AppCompatActivity {
 
     private static final String TAG = "ScanActivity";
@@ -105,7 +102,6 @@ public class ScanActivity extends AppCompatActivity {
 
     TableRow layoutItemCode, layoutScanQty;
     TextView tvDescription, tvTempTotalScanQty, tvTotalScanQty, tvMrp;
-    //	TextView tvItemTotalScanQty, tvLastScannedItem;
     EditText edtItemCode, edtBarcode, edtStockQty, edtScanQty, edtMultiQty;
     CheckBox chkScanMultiQty;
     Button btnBarcode, btnItemSearch;
@@ -191,8 +187,6 @@ public class ScanActivity extends AppCompatActivity {
         tvTempTotalScanQty = findViewById(R.id.tv_temp_total_scan_qty);
         tvTotalScanQty = findViewById(R.id.tv_total_scan_qty);
         tvMrp = findViewById(R.id.tv_mrp);
-//		tvItemTotalScanQty = findViewById(R.id.tv_item_total_scan_qty);
-//		tvLastScannedItem = findViewById(R.id.tv_lastScannedItem);
 
         // Buttons Declaration
         btnEnter = findViewById(R.id.btn_barcode_enter);
@@ -216,11 +210,6 @@ public class ScanActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                //				if (s.length() > 5) {
-//					itemSearch();
-//					edtBarcode.removeTextChangedListener(mBarCodeTextWatcher);
-//				}
                 if (timer != null) {
                     timer.cancel();
                 }
@@ -270,8 +259,6 @@ public class ScanActivity extends AppCompatActivity {
                             .setNegativeButton("No", (dialog, which) -> {
                                 dialog.dismiss();
                                 edtScanQty.setText(null);
-//									edtScanQty.setActivated(true);
-//									edtScanQty.removeTextChangedListener(mQuantityTextWatcher);
                             })
                             .create().show();
                 }
@@ -334,7 +321,6 @@ public class ScanActivity extends AppCompatActivity {
 
         edtScanQty.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-//					processForSaveItem();
                 InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);  // hide the soft keyboard
@@ -502,7 +488,6 @@ public class ScanActivity extends AppCompatActivity {
 
             uriFile = uri;
             importExcel();
-//            new ImportExcel().execute();
 
         } else {
 
@@ -747,36 +732,6 @@ public class ScanActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    //	public void onTopButtonClick(View v) {
-//		if (v.getId() == R.id.btn_barcode) {
-//			startBarcodeScanner();
-//		} else if (v.getId() == R.id.btn_item_search) {
-//			startActivityForResult(new Intent(this, SearchActivity.class), REQUEST_CODE_ITEM_SEARCH);
-//		}
-//	}
-    //	public void onClick(View v) {
-//		int id = v.getId();
-//
-//		if (id == R.id.btn_cancel) {
-//			finish();
-//		} else if (id == R.id.btn_save) {
-//			processForSaveItemToLocal();
-//			//processForSaveItem();
-//		} else if (id == R.id.btn_clear) {
-//			clearLayout();
-//		} else if (id == R.id.btn_save_to_server) {
-//			if (scanItemsArrayList != null && !scanItemsArrayList.isEmpty() && !pref.getSession().isEmpty()) {
-//				finalSaveConfirmation();
-//			} else if (scanItemsArrayList != null && !scanItemsArrayList.isEmpty() && pref.getSession().isEmpty()) {
-//				Utils.errorDialog(this, "Empty Session", "Please Login to online mode first to get new session.");
-//				errorVibration();
-//			} else {
-//				Utils.errorDialog(this, "Empty Item", "Scan item is empty. Please scan an item first.");
-//				errorVibration();
-//			}
-//		}
-//	}
-
     public void loadLocalSaveItems() {
         scanItemsArrayList = new ArrayList<>();
         DB = new DBHelper(ScanActivity.this);
@@ -837,9 +792,6 @@ public class ScanActivity extends AppCompatActivity {
         isCameraBarcode = false;
         item = null;
 
-        //        edtItemCode.setText("");
-//        tvDescription.setText("");
-//		tvItemTotalScanQty.setText("");
         edtBarcode.setText("");
         edtStockQty.setText("");
         edtScanQty.setText("");
@@ -864,7 +816,6 @@ public class ScanActivity extends AppCompatActivity {
         edtItemCode.setText("");
         tvDescription.setText("");
         tvMrp.setText("");
-//		tvItemTotalScanQty.setText("");
         edtBarcode.setText("");
         edtStockQty.setText("");
         edtScanQty.setText("");
@@ -895,14 +846,11 @@ public class ScanActivity extends AppCompatActivity {
                         edtBarcode.setText(item.getBarcode());
                         tvDescription.setText(item.getDescription());
                         edtStockQty.setText(item.getStartQty() + "");
-//						tvMrp.setText(String.format(String.valueOf(item.unitPrice)));
                         tvMrp.setText(String.format(Locale.US, "%.6f", item.getMrp()));
-//            			itemTotalScanQtyShow(item); //show total scan
                         getScanItemInfo(item);
 
                         if (!isCameraBarcode) {
                             edtScanQty.requestFocus();
-//                		edtBarcode.addTextChangedListener(mBarCodeTextWatcher);
                         }
 
                         if (searchType.equalsIgnoreCase(TYPE_SCAN)) {
@@ -1143,45 +1091,6 @@ public class ScanActivity extends AppCompatActivity {
         });
     }
 
-    /*private void showBarcodeMultipleItemDialog(final List<InventoryData.Data> list) {
-        AlertDialog.Builder d = new AlertDialog.Builder(this);
-        d.setTitle("Select a Product");
-
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(20, 50, 20, 50);
-
-        ListView listView = new ListView(this);
-        layout.addView(listView);
-
-        ItemSearchAdapter adapter = new ItemSearchAdapter(ScanActivity.this, list);
-        listView.setAdapter(adapter);
-
-        d.setView(layout);
-
-        final AlertDialog dialog = d.create();
-        dialog.setCancelable(false); // Prevents dismissal on back press
-        dialog.setCanceledOnTouchOutside(false); // Prevents dismissal on outside touch
-        dialog.show();
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            item = list.get(position);
-            searchType = TYPE_SCAN;
-            updateLayout(item);
-
-            Log.e(TAG, "Selected ITEMs SALE BARCODE: " + item.getsBarcode());
-
-            // save for single qty
-            if (!chkScanMultiQty.isChecked()) {
-                //processForSaveItem();
-                processForSaveItemToLocal();
-            }
-
-            dialog.dismiss();
-        });
-
-    }*/
-
     private void barcodeProcessFailed() {
         edtBarcode.addTextChangedListener(mBarCodeTextWatcher);
         AlertDialog.Builder d = new AlertDialog.Builder(this);
@@ -1239,8 +1148,6 @@ public class ScanActivity extends AppCompatActivity {
         } else {
             Log.d("ServerListSize", String.valueOf(saveInventoryList.size()));
             checkSessionValidity();
-//            sendItemToServer();
-            //saveInventoryList.clear();
         }
     }
 
@@ -1315,177 +1222,6 @@ public class ScanActivity extends AppCompatActivity {
         ));
         AppController.getInstance().addToRequestQueue(stringRequest);
     }
-
-    //	private void sendItemToServer() {
-//		String url = pref.getBaseUrl() + "Data/SaveInventory";
-////		String sessionId = pref.getSession();
-//		progressDialog.show();
-//
-//		JSONArray jsonArray = new JSONArray();
-//		for (SaveInventory item : saveInventoryList) {
-//			JSONObject jsonObject = new JSONObject();
-//			try {
-//				jsonObject.put("UserID", item.userId);
-//				jsonObject.put("DeviceID", item.deviceId);
-//				jsonObject.put("SessionId", item.sessionId);
-//				jsonObject.put("OutletCode", item.outletCode);
-//				jsonObject.put("ZoneName", item.zoneName);
-//				jsonObject.put("ItemCode", item.itemCode);
-//				jsonObject.put("Barcode", item.barcode);
-//				jsonObject.put("User_Barcode", item.userBarcode);
-//				jsonObject.put("sBarcode", item.sBarcode);
-//				jsonObject.put("ItemDescription", item.itemDescription);
-////				jsonObject.put("SalePrice", String.format(Locale.US, "%.6f", Double.parseDouble(item.salePrice)));
-//				try {
-//					jsonObject.put("SalePrice", String.format(Locale.US, "%.6f", Double.parseDouble(item.salePrice)));
-//				} catch (NumberFormatException e) {
-//					Log.d(TAG, "Invalid salePrice: " + item.salePrice);
-//					jsonObject.put("SalePrice", 0.0);
-//				}
-//				jsonObject.put("SystemQty", item.systemQty);
-//				jsonObject.put("ScanQty", item.scanQty);
-//				jsonObject.put("ScQty", item.scQty);
-//				jsonObject.put("AdjQty", item.adjQty);
-//				jsonObject.put("SrQty", item.srQty);
-//				jsonObject.put("EnQty", item.enQty);
-//				jsonObject.put("Sqty", item.sQty);
-//				jsonObject.put("ScanDate", item.createDate);
-//				jsonObject.put("CPU", item.cpu);
-//
-//				jsonArray.put(jsonObject);
-//			} catch (JSONException e) {
-//				Log.d(TAG, "jsonArray error: " + e);
-//			}
-//		}
-//
-//		Log.e(TAG, "URL: " + url);
-//		Log.e(TAG, "JSON Array: " + jsonArray);
-//
-//		JsonObjectRequest jsonObjectRequest = getRequest(url, jsonArray);
-//
-//		AppController.getInstance().addToRequestQueue(jsonObjectRequest);
-//
-//		checkTotalScanQty();
-//		loadLocalSaveItems();
-//		Log.d("saveInventoryList", String.valueOf(scanItemsArrayList.size()));
-//	}
-//
-//	private @NonNull JsonObjectRequest getRequest(String url, JSONArray jsonArray) {
-//		JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
-//				response -> {
-//					progressDialog.dismiss();
-//					try {
-//						Log.e(TAG, "onResponse: " + response);
-//						boolean status = response.getBoolean("Status");
-//						if (status) {
-//							clearLayout();
-//							Toast.makeText(ScanActivity.this, "All data saved successfully!", Toast.LENGTH_SHORT).show();
-//
-//							DB.deleteScannedData();
-//							DB.deleteInventoryData();
-//
-////							DB.addUsedSession(pref.getSession());
-////							pref.setSession("");
-//							DB.addUsedSessions(pref.getSessionIds());
-//							pref.setSessionIds(null);
-//
-//							Intent intent = new Intent(ScanActivity.this, LoginActivity.class);
-//							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//							startActivity(intent);
-//							finish();
-//						} else {
-//							errorVibration();
-//							Utils.errorDialog(ScanActivity.this, "Error", "Error saving data");
-//						}
-//					} catch (JSONException e) {
-//						Log.d(TAG, "sendItemToServer error: " + e);
-//					}
-//				}, error -> {
-//			progressDialog.dismiss();
-//			errorVibration();
-////			error.printStackTrace();
-//			Log.d(TAG, "sendItemToServer error: " + error.getMessage());
-//			Utils.errorDialog(ScanActivity.this, "Connection Error", error.getMessage());
-//		}) {
-//			@Override
-//			public byte[] getBody() {
-//				return jsonArray.toString().getBytes();
-//			}
-//
-//			@Override
-//			public String getBodyContentType() {
-//				return "application/json; charset=utf-8";
-//			}
-//
-//			@Override
-//			public Map<String, String> getHeaders() {
-//				Map<String, String> headers = new HashMap<>();
-//				headers.put("Content-Type", "application/json");
-//				return headers;
-//			}
-//		};
-//
-//		jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-//				3060000, // Timeout in 2 minutes
-//				DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//				DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-//		));
-//		return jsonObjectRequest;
-//	}
-
-    /// New Comment
-//    private void sendItemToServer() {
-//        totalItems = saveInventoryList.size();
-//        successfulItemsCount = 0;
-//        failedItemsCount = 0;
-//        String url = pref.getBaseUrl() + "Data/SaveInventory";
-//        progressDialog.show();
-//
-//        sendDataInChunks(url);
-//    }
-//
-//    private void sendDataInChunks(String url) {
-//        int batchSize = 500;
-//
-//        final List<SaveInventory> itemsToSend = new ArrayList<>(saveInventoryList);
-//
-//        new Thread(() -> {
-//            while (!itemsToSend.isEmpty()) {
-//                int endIndex = Math.min(batchSize, itemsToSend.size());
-//                List<SaveInventory> currentBatch = new ArrayList<>(itemsToSend.subList(0, endIndex));
-//                JSONArray jsonArray = createJsonArray(currentBatch);
-//
-//                boolean status = sendBatchToServer(url, jsonArray);
-//                if (status) {
-//                    successfulItemsCount += currentBatch.size();
-//                    runOnUiThread(() -> DB.deleteScanItems(currentBatch));
-//                    // Remove processed items from the list
-//                    synchronized (itemsToSend) {
-//                        itemsToSend.subList(0, endIndex).clear();
-//                    }
-//                } else {
-//                    failedItemsCount += currentBatch.size();
-//                    return;
-//                }
-//            }
-//
-//            runOnUiThread(() -> {
-//                saveInventoryList.clear();
-//                progressDialog.dismiss();
-//                clearLayout();
-//                Toast.makeText(ScanActivity.this, "Data saved successfully.", Toast.LENGTH_LONG).show();
-//                // Toast.makeText(ScanActivity.this, "Data saved successfully.\n Total: " + totalItems + "\n Successful: " + successfulItemsCount + ".", Toast.LENGTH_LONG).show();
-//                DB.deleteInventoryData();
-//                DB.addUsedSessions(pref.getSessionIds());
-//                pref.setSessionIds(null);
-//
-//                Intent intent = new Intent(ScanActivity.this, LoginActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//                finish();
-//            });
-//        }).start();
-//    }
 
     private void sendItemToServer() {
         totalItems = saveInventoryList.size();
@@ -1607,76 +1343,6 @@ public class ScanActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
-    /*    private void sendDataInChunks(String url) {
-        int batchSize = 200;
-
-        final List<SaveInventory> itemsToSend = new ArrayList<>(saveInventoryList);
-
-        while (!itemsToSend.isEmpty()) {
-            int endIndex = Math.min(batchSize, itemsToSend.size());
-            List<SaveInventory> currentBatch = new ArrayList<>(itemsToSend.subList(0, endIndex));
-            JSONArray jsonArray = createJsonArray(currentBatch);
-
-            boolean status = sendBatchToServer(url, jsonArray);
-            if (status) {
-                successfulItemsCount += currentBatch.size();
-                runOnUiThread(() -> progressDialog.setProgress(successfulItemsCount));
-
-                itemsToSend.subList(0, endIndex).clear();
-                // Remove Sent items from Previous Record
-                DB.deleteScanItems(currentBatch);
-                saveInventoryList.removeAll(currentBatch);
-            } else {
-                failedItemsCount += currentBatch.size();
-                runOnUiThread(() -> {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
-                });
-                return;
-            }
-        }
-
-        runOnUiThread(() -> {
-            checkTotalScanQty();
-            loadLocalSaveItems();
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-            Toast.makeText(ScanActivity.this, "All Scanned Data Sent Successfully.", Toast.LENGTH_LONG).show();
-            clearLayout();
-            if (saveInventoryList.isEmpty()) {
-                finish();
-            }
-        });
-    }*/
-
-    //    private void deleteRunningSessionsConfirmation() {
-//        List<String> sessionIds = pref.getSessionIds();
-//        if (sessionIds.isEmpty()) {
-//            Toast.makeText(this, "No Sessions Found", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        AlertDialog.Builder d = new AlertDialog.Builder(this);
-//        d.setTitle("Confirmation");
-//        d.setMessage("Do you want to Delete All the running sessions?");
-//        d.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-//
-//        d.setPositiveButton("Yes", (dialog, which) -> {
-//            Toast.makeText(ScanActivity.this, "Session Deleted successfully.", Toast.LENGTH_LONG).show();
-//            DB.deleteInventoryData();
-//            DB.addUsedSessions(pref.getSessionIds());
-//            pref.setSessionIds(null);
-//
-//            Intent intent = new Intent(ScanActivity.this, LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            dialog.dismiss();
-//            finish();
-//            startActivity(intent);
-//        });
-//        d.create().show();
-//    }
 
     private JSONArray createJsonArray(List<SaveInventory> items) {
         JSONArray jsonArray = new JSONArray();
@@ -1894,41 +1560,6 @@ public class ScanActivity extends AppCompatActivity {
 
         boolean checkInsertData = DB.addNewItem(finalItem);
 
-        //        final List<InventoryData.Data> itemDataList = DB.getOfflineItemByBarcode(item.barcode);
-//
-//        if (itemDataList != null && !itemDataList.isEmpty()) {
-//            List<ScanItems> scanItemsList = new ArrayList<>();
-//
-//            for (InventoryData.Data itemData : itemDataList) {
-//                ScanItems scanItem = new ScanItems(
-//                        itemCode,
-//                        barcode,
-//                        itemData.getUserBarcode().trim(),
-//                        itemData.getsBarcode(),
-//                        itemDescription,
-//                        scanQty,
-//                        adjQty,
-//                        userId,
-//                        deviceId,
-//                        zoneName,
-//                        scQty,
-//                        srQty,
-//                        enQty,
-//                        createDate,
-//                        systemQty,
-//                        sQty,
-//                        outletCode,
-//                        salePrice,
-//                        String.valueOf(itemData.getCpu()),
-//                        itemData.getSessionId()
-//                );
-//                scanItemsList.add(scanItem);
-//            }
-//
-//            checkInsertData = DB.addNewSearchItems(scanItemsList);
-//        }
-
-//        itemTotalScanQtyShow();
         checkTotalScanQty();
         loadLocalSaveItems();
         clearLayout();
@@ -1961,21 +1592,6 @@ public class ScanActivity extends AppCompatActivity {
 
         Log.e(TAG, "onResponse: Total Scan Quantity: " + showTotalScanQty);
     }
-
-/*    private void itemTotalScanQtyShow() {
-
-        String barcode = edtItemCode.getText().toString().trim();
-        String showItemTotalScanQty = DB.getItemTotalScanQty(barcode);
-
-		if (showItemTotalScanQty == null) {
-			tvItemTotalScanQty.setText(R.string._00);
-		} else {
-			tvItemTotalScanQty.setText(showItemTotalScanQty);
-		}
-
-        Log.e(TAG, "onResponse: Item Total Scan Quantity: " + showItemTotalScanQty);
-
-    }*/
 
     private void getScanItemInfo(final InventoryData.Data item) {
         Log.e(TAG, "ItemSearch item: " + item.toString());

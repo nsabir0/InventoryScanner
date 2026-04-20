@@ -5,12 +5,12 @@ import '../controllers/view_scans_controller.dart';
 class ViewScansView extends GetView<ViewScansController> {
   final bool isTempMode;
 
-  const ViewScansView({super.key, this.isTempMode = false});
+  ViewScansView({super.key, this.isTempMode = false}) {
+    Get.find<ViewScansController>().initMode(isTempMode);
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Set mode on build
-    controller.isTempMode.value = isTempMode;
 
     return Scaffold(
       appBar: AppBar(

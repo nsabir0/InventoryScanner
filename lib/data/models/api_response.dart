@@ -191,4 +191,18 @@ class SaveInventoryResponse {
       savedCount: json['SavedCount'],
     );
   }
+
+  bool get isSuccess => status;
+}
+
+class ScanItemInfo {
+  final double adjQty;
+
+  ScanItemInfo({required this.adjQty});
+
+  factory ScanItemInfo.fromJson(Map<String, dynamic> json) {
+    return ScanItemInfo(
+      adjQty: (json['AdjQty'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
 }
