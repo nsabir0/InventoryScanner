@@ -52,12 +52,20 @@ class LoginController extends GetxController {
     if (isLoading.isTrue) return;
 
     if (storage.outletCode.isEmpty || storage.zoneName.isEmpty) {
-      Get.snackbar("Error", "Configuration missing. Please check settings.");
+      Get.snackbar(
+        "Error",
+        "Configuration missing. Please check settings.",
+        colorText: Colors.white,
+      );
       return;
     }
 
     if (isOnline.value && storage.baseUrl.isEmpty) {
-      Get.snackbar("Error", "IP address not found. Please check settings.");
+      Get.snackbar(
+        "Error",
+        "IP address not found. Please check settings.",
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -65,7 +73,11 @@ class LoginController extends GetxController {
     String password = passwordController.text.trim();
 
     if (userName.isEmpty || password.isEmpty) {
-      Get.snackbar("Error", "Please enter username and password.");
+      Get.snackbar(
+        "Error",
+        "Please enter username and password.",
+        colorText: Colors.white,
+      );
       return;
     }
 
@@ -99,7 +111,7 @@ class LoginController extends GetxController {
       } else {
         String msg = response.message.trim();
         if (msg.isEmpty) msg = "Invalid credentials or account issue.";
-        
+
         Get.snackbar("Login Failed", msg,
             snackPosition: SnackPosition.BOTTOM,
             backgroundColor: Colors.red.shade800,
@@ -108,16 +120,22 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       String errorMessage = "An unexpected error occurred.";
-      
+
       final errorStr = e.toString();
-      if (errorStr.contains('TimeoutException') || errorStr.contains('timeout')) {
+      if (errorStr.contains('TimeoutException') ||
+          errorStr.contains('timeout')) {
         errorMessage = "Connection timed out. Please try again.";
-      } else if (errorStr.contains('SocketException') || errorStr.contains('ClientException') || errorStr.contains('No route to host')) {
+      } else if (errorStr.contains('SocketException') ||
+          errorStr.contains('ClientException') ||
+          errorStr.contains('No route to host')) {
         errorMessage = "No internet connection or server unreachable.";
       } else if (errorStr.contains('FormatException')) {
         errorMessage = "Invalid server response.";
       } else {
-        errorMessage = errorStr.replaceFirst('Exception:', '').replaceFirst('Login failed:', '').trim();
+        errorMessage = errorStr
+            .replaceFirst('Exception:', '')
+            .replaceFirst('Login failed:', '')
+            .trim();
         if (errorMessage.length > 100) {
           errorMessage = "Connection error. Please check server settings.";
         }
@@ -136,13 +154,21 @@ class LoginController extends GetxController {
 
   void _offlineLogin(String userName, String password) {
     if (storage.offlineUserName.isEmpty) {
-      Get.snackbar("Error", "Please login first in online mode");
+      Get.snackbar(
+        "Error",
+        "Please login first in online mode",
+        colorText: Colors.white,
+      );
     } else if (storage.offlineUserName == userName &&
         storage.offlinePassword == password) {
       // Offline mode always goes to Home (matches native Android)
       Get.offAllNamed(Routes.HOME);
     } else {
-      Get.snackbar("Error", "Invalid username or password.");
+      Get.snackbar(
+        "Error",
+        "Invalid username or password.",
+        colorText: Colors.white,
+      );
     }
   }
 

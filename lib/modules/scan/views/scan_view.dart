@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -69,6 +70,7 @@ class ScanView extends GetView<ScanController> {
                         Expanded(
                           child: TextField(
                             controller: controller.barcodeController,
+                            focusNode: controller.barcodeFocusNode,
                             onSubmitted: controller.onBarcodeSubmitted,
                             style: TextStyle(fontSize: 13.sp),
                             decoration: _inputDecoration(""),
@@ -151,6 +153,7 @@ class ScanView extends GetView<ScanController> {
                             () => TextField(
                               enabled: controller.isMultiQty.isTrue,
                               controller: controller.scanQtyController,
+                              focusNode: controller.qtyFocusNode,
                               style: TextStyle(fontSize: 13.sp),
                               keyboardType:
                                   const TextInputType.numberWithOptions(
@@ -404,23 +407,34 @@ class ScanView extends GetView<ScanController> {
   }
 
   void _startScanner() {
-    Get.to(() => Scaffold(
-          appBar: AppBar(
-            toolbarHeight: 48.h,
-            title: Text("Scan Barcode", style: TextStyle(fontSize: 18.sp)),
-          ),
-          body: MobileScanner(
-            onDetect: (capture) {
+    bool isPopped = false;
+    Get.to(
+      () => Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 48.h,
+          title: Text("Scan Barcode", style: TextStyle(fontSize: 18.sp)),
+        ),
+        body: MobileScanner(
+          onDetect: (capture) {
+            if (isPopped) return;
+            try {
               final List<Barcode> barcodes = capture.barcodes;
               if (barcodes.isNotEmpty) {
                 final String? code = barcodes.first.rawValue;
                 if (code != null) {
+                  isPopped = true;
                   Get.back();
                   controller.onBarcodeSubmitted(code);
                 }
               }
-            },
-          ),
-        ));
+            } catch (e, stack) {
+              log("MobileScanner Error: $e", stackTrace: stack);
+              Get.snackbar("Scanner Error", e.toString(),
+                  snackPosition: SnackPosition.BOTTOM);
+            }
+          },
+        ),
+      ),
+    );
   }
 }

@@ -26,7 +26,10 @@ class ScanController extends GetxController {
   final scanQtyController = TextEditingController();
   final itemCodeController = TextEditingController();
   final stockQtyController = TextEditingController();
-  final multiQtyController = TextEditingController();
+
+  // Focus Nodes
+  final barcodeFocusNode = FocusNode();
+  final qtyFocusNode = FocusNode();
 
   // Observables
   var isMultiQty = false.obs;
@@ -46,7 +49,6 @@ class ScanController extends GetxController {
   void onInit() {
     super.onInit();
     isMultiQty.value = storage.isMultiScanQty;
-    multiQtyController.text = isMultiQty.value ? "" : "1";
     updateTotals();
   }
 
@@ -104,10 +106,7 @@ class ScanController extends GetxController {
       _barcodeProcessFailed();
     } else if (results.length == 1) {
       _setSelectedItem(results.first, type: "barcode");
-      if (!isMultiQty.value) {
-        scanQtyController.text = "1";
-        saveItemToTemp();
-      }
+      await _handlePostSelectionFocus();
     } else {
       _showMultipleItemDialog(results);
     }
@@ -194,13 +193,10 @@ class ScanController extends GetxController {
               return ListTile(
                 title: Text(item.description ?? ""),
                 subtitle: Text("Barcode: ${item.barcode} | Price: ${item.mrp}"),
-                onTap: () {
+                onTap: () async {
                   Get.back();
                   _setSelectedItem(item, type: "barcode");
-                  if (!isMultiQty.value) {
-                    scanQtyController.text = "1";
-                    saveItemToTemp();
-                  }
+                  await _handlePostSelectionFocus();
                 },
               );
             },
@@ -721,17 +717,34 @@ class ScanController extends GetxController {
   void toggleMultiQty(bool? val) {
     isMultiQty.value = val ?? false;
     storage.isMultiScanQty = isMultiQty.value;
-    if (isMultiQty.value) {
-      multiQtyController.clear();
-    } else {
-      multiQtyController.text = "1";
-    }
   }
 
   void showSearchDialog() async {
     final result = await Get.toNamed('/search');
     if (result != null && result is InventoryDataData) {
       _setSelectedItem(result, type: "search");
+      await _handlePostSelectionFocus();
     }
+  }
+
+  Future<void> _handlePostSelectionFocus() async {
+    if (isMultiQty.value) {
+      qtyFocusNode.requestFocus();
+    } else {
+      scanQtyController.text = "1";
+      await saveItemToTemp();
+      barcodeFocusNode.requestFocus();
+    }
+  }
+
+  @override
+  void onClose() {
+    barcodeFocusNode.dispose();
+    qtyFocusNode.dispose();
+    barcodeController.dispose();
+    scanQtyController.dispose();
+    itemCodeController.dispose();
+    stockQtyController.dispose();
+    super.onClose();
   }
 }
