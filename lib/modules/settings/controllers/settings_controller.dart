@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import '../../../data/services/storage_service.dart';
+import '../../../data/repositories/inventory_repository.dart';
 
 class SettingsController extends GetxController {
   final StorageService storage = Get.find<StorageService>();
+  final inventoryRepo = Get.find<InventoryRepository>();
 
   final hostController = TextEditingController();
   final zoneNameController = TextEditingController();
@@ -17,6 +20,7 @@ class SettingsController extends GetxController {
 
   var deviceId = ''.obs;
   var selectedZoneName = 'Other'.obs;
+  var usedSessionIds = <String>[].obs;
 
   final List<String> zoneList = ['Front Office', 'Back Office', 'Other'];
 
@@ -24,10 +28,16 @@ class SettingsController extends GetxController {
   void onInit() {
     super.onInit();
     _getDeviceId();
+    _fetchUsedSessions();
     hostController.text =
         storage.baseUrl.replaceAll("http://", "").replaceAll("/api/", "");
     zoneNameController.text = storage.zoneName;
     outletCodeController.text = storage.outletCode;
+
+    isMultiScanQty.value = storage.isMultiScanQty;
+    isStockVisible.value = storage.isStockVisible;
+    isItemCodeVisible.value = storage.isItemCodeVisible;
+    isScanBySBarcode.value = storage.isScanBySBarcode;
 
     // Set selected zone from storage
     if (storage.zoneName.isNotEmpty && zoneList.contains(storage.zoneName)) {
@@ -50,6 +60,21 @@ class SettingsController extends GetxController {
     }
   }
 
+  Future<void> _fetchUsedSessions() async {
+    final sessions = await inventoryRepo.getUsedSessionIds();
+    usedSessionIds.assignAll(sessions);
+  }
+
+  void copyDeviceIdToClipboard() {
+    if (deviceId.value.isNotEmpty) {
+      Clipboard.setData(ClipboardData(text: deviceId.value));
+      Get.snackbar("Copied!", "Device ID: ${deviceId.value}",
+          snackPosition: SnackPosition.BOTTOM,
+          margin: const EdgeInsets.all(12),
+          duration: const Duration(seconds: 2));
+    }
+  }
+
   void saveSettings() {
     storage.saveConfig(
       hostController.text.trim(),
@@ -57,6 +82,12 @@ class SettingsController extends GetxController {
       selectedZoneName.value,
       outletCodeController.text.trim(),
     );
+
+    storage.isMultiScanQty = isMultiScanQty.value;
+    storage.isStockVisible = isStockVisible.value;
+    storage.isItemCodeVisible = isItemCodeVisible.value;
+    storage.isScanBySBarcode = isScanBySBarcode.value;
+
     Get.back();
     Get.snackbar("Success", "Settings saved successfully");
   }

@@ -64,8 +64,18 @@ class StorageService extends GetxService {
     _prefs.setString(AppStrings.offlinePassword, password);
   }
 
-  bool get isMultiScanQty => _prefs.getBool('isMultiScanQty') ?? false;
+  bool get isMultiScanQty => _prefs.getBool('isMultiScanQty') ?? true;
   set isMultiScanQty(bool value) => _prefs.setBool('isMultiScanQty', value);
+
+  bool get isStockVisible => _prefs.getBool('isStockVisible') ?? false;
+  set isStockVisible(bool value) => _prefs.setBool('isStockVisible', value);
+
+  bool get isItemCodeVisible => _prefs.getBool('isItemCodeVisible') ?? false;
+  set isItemCodeVisible(bool value) =>
+      _prefs.setBool('isItemCodeVisible', value);
+
+  bool get isScanBySBarcode => _prefs.getBool('isScanBySBarcode') ?? true;
+  set isScanBySBarcode(bool value) => _prefs.setBool('isScanBySBarcode', value);
 
   String get password => _prefs.getString('password') ?? "";
   set password(String value) => _prefs.setString('password', value);

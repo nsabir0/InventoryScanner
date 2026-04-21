@@ -43,43 +43,83 @@ class LoginView extends GetView<LoginController> {
                             alignment: Alignment.topRight,
                             child: GestureDetector(
                               onTap: controller.toggleMode,
-                              child: Obx(
-                                () => Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 12.w,
-                                      height: 12.w,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: controller.isOnline.value
-                                            ? Colors.greenAccent
-                                            : Colors.grey[400],
-                                        boxShadow: [
-                                          if (controller.isOnline.value)
-                                            BoxShadow(
-                                              color: Colors.greenAccent
-                                                  .withAlpha(100),
-                                              blurRadius: 8.r,
-                                              spreadRadius: 2.r,
+                              child: Obx(() {
+                                final isOnline = controller.isOnline.value;
+                                return AnimatedContainer(
+                                  duration: const Duration(milliseconds: 400),
+                                  curve: Curves.easeOutBack,
+                                  width: 78.w,
+                                  height: 26.h,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15.r),
+                                    color: isOnline
+                                        ? const Color(0xFF43A047)
+                                        : const Color(0xFF9E9E9E),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      AnimatedAlign(
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        curve: Curves.easeOutBack,
+                                        alignment: isOnline
+                                            ? Alignment.centerLeft
+                                            : Alignment.centerRight,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10.w),
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                                milliseconds: 300),
+                                            transitionBuilder:
+                                                (child, animation) =>
+                                                    FadeTransition(
+                                              opacity: animation,
+                                              child: child,
                                             ),
-                                        ],
+                                            child: Text(
+                                              isOnline ? "Online" : "Offline",
+                                              key: ValueKey<bool>(isOnline),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 12.sp,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(width: 8.w),
-                                    Text(
-                                      controller.isOnline.value
-                                          ? "Online Mode"
-                                          : "Offline Mode",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14.sp,
+                                      AnimatedAlign(
+                                        duration:
+                                            const Duration(milliseconds: 400),
+                                        curve: Curves.easeOutBack,
+                                        alignment: isOnline
+                                            ? Alignment.centerRight
+                                            : Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.all(3.r),
+                                          child: Container(
+                                            width: 24.h,
+                                            height: 24.h,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black
+                                                      .withAlpha(40),
+                                                  blurRadius: 4.r,
+                                                  offset: Offset(0, 2.h),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                    ],
+                                  ),
+                                );
+                              }),
                             ),
                           ),
 
@@ -159,8 +199,8 @@ class LoginView extends GetView<LoginController> {
                                     backgroundColor:
                                         const Color(0xFF1976D2), // Blue
                                     foregroundColor: Colors.white,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 16.h),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 16.h),
                                     elevation: 8.r,
                                     shadowColor: Colors.black38,
                                     shape: RoundedRectangleBorder(

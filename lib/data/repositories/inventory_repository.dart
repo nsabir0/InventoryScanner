@@ -115,4 +115,9 @@ class InventoryRepository {
     final result = await query.get();
     return result.isNotEmpty;
   }
+
+  Future<List<String>> getUsedSessionIds() async {
+    final results = await db.select(db.usedSessionData).get();
+    return results.map((e) => e.sessionId ?? '').where((s) => s.isNotEmpty).toList();
+  }
 }

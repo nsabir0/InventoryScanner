@@ -30,9 +30,9 @@ class LoginController extends GetxController {
     userController.addListener(() {
       isUserEmpty.value = userController.text.trim().isEmpty;
     });
-    Timer(Duration(milliseconds: 200), () {
-      userFocusNode.requestFocus();
-    });
+    // Timer(Duration(milliseconds: 200), () {
+    //   userFocusNode.requestFocus();
+    // });
   }
 
   void handleUserSubmitted() {
@@ -88,25 +88,47 @@ class LoginController extends GetxController {
         storage.saveOfflineUserInfo(userName, password);
         storage.user = userName;
 
-        // Navigate based on mode and existing data (matches native Android logic)
+        Get.snackbar("Login Successful", "Welcome, $userName",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green.shade800,
+            colorText: Colors.white,
+            duration: const Duration(seconds: 2),
+            icon: const Icon(Icons.check_circle, color: Colors.white));
+
         await _navigateAfterLogin();
       } else {
-        Get.snackbar("Login Failed", response.message,
+        String msg = response.message.trim();
+        if (msg.isEmpty) msg = "Invalid credentials or account issue.";
+        
+        Get.snackbar("Login Failed", msg,
             snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.red,
-            colorText: Colors.white);
+            backgroundColor: Colors.red.shade800,
+            colorText: Colors.white,
+            icon: const Icon(Icons.error, color: Colors.white));
       }
     } catch (e) {
-      String errorMessage = e.toString();
-      // Extract clean error message
-      if (errorMessage.contains('Exception:')) {
-        errorMessage = errorMessage.split('Exception:').last.trim();
+      String errorMessage = "An unexpected error occurred.";
+      
+      final errorStr = e.toString();
+      if (errorStr.contains('TimeoutException') || errorStr.contains('timeout')) {
+        errorMessage = "Connection timed out. Please try again.";
+      } else if (errorStr.contains('SocketException') || errorStr.contains('ClientException') || errorStr.contains('No route to host')) {
+        errorMessage = "No internet connection or server unreachable.";
+      } else if (errorStr.contains('FormatException')) {
+        errorMessage = "Invalid server response.";
+      } else {
+        errorMessage = errorStr.replaceFirst('Exception:', '').replaceFirst('Login failed:', '').trim();
+        if (errorMessage.length > 100) {
+          errorMessage = "Connection error. Please check server settings.";
+        }
       }
+
       Get.snackbar("Connection Error", errorMessage,
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.orange,
+          backgroundColor: Colors.orange.shade800,
           colorText: Colors.white,
-          duration: const Duration(seconds: 4));
+          duration: const Duration(seconds: 4),
+          icon: const Icon(Icons.wifi_off, color: Colors.white));
     } finally {
       isLoading.value = false;
     }
